@@ -1,0 +1,16 @@
+{
+  "name": "adapt-contrib-background-switcher",
+  "version": "0.0.1",
+  "homepage": "https://github.com/adaptlearning/adapt-contrib-background-switcher",
+  "authors": [
+      "Salamat Ali <salamatmoali@gmail.com>",
+      "Stuart O'Hare <develop@stuartohare.com>"
+  ],
+  "description": "A basic feedback overlay for question components",
+  "main": "/js/adapt-contrib-background-switcher.js",
+  "keywords": [
+    "adapt-plugin",
+    "adapt-extension"
+  ],
+  "license": "GPLv3"
+}

@@ -1,0 +1,84 @@
+
+.page.background-switcher-active {
+
+    .page-inner {
+        position: relative;
+    }
+    
+    .background-switcher-desktop {
+        
+        .article {
+            position:relative;
+            background-color: transparent;
+        }
+
+        .block {
+            background-color: @background-color;
+                
+            &.background-switcher-block {
+                background-color: transparent;
+
+                .background-switcher-block-mobile {
+                    background-image: none !important;
+                }
+            }
+        }
+        
+        .background-switcher-container {
+            
+            .background-switcher-background {
+
+                background-size: cover;
+                background-position: 50% 0;
+                position: fixed;
+                z-index: 0;
+                width: 100%;
+                height: 100%;
+                top: 50px;                                     
+                opacity: 0;
+
+                transition: opacity 1s;
+            }
+
+            .background-switcher-background.active {                
+                opacity:1;
+            }
+        }
+    }
+    
+    .background-switcher-mobile {
+        
+        .background-switcher-background {
+            display:none;
+        }
+        
+        .block.background-switcher-block {
+            
+            .background-switcher-block-mobile {
+                
+                background-size: cover !important;
+                background-repeat: no-repeat;
+                background-position: center;
+            }
+        }        
+    }
+    
+    .ie8 & {
+        .background-switcher-desktop;
+        
+        .background-switcher-container {            
+            .background-switcher-background {        
+                max-width: 1024px;
+            }
+        }
+    }
+    @media all and (min-width:699px) {
+        .background-switcher-desktop;   
+    }
+    
+    @media all and (max-width:699px){
+        .background-switcher-mobile;
+    }
+    
+
+}
