@@ -18,6 +18,10 @@ define(function(require) {
          * @default []
          */                
         blockDataSet : [],
+        /**
+         * Reference to the item in blockDataSet that is currently being displayed
+         */
+        currentBlockItem: undefined,
         
         
         /*
@@ -25,19 +29,40 @@ define(function(require) {
          * @param {object} constructor options
          * @returns {undefined}
          */
-        
         initialize: function(options) {
             
             this.blockDataSet = [];                          
 
             this.listenTo(Adapt, "pageView:postRender", this.setupBackgroundContainer);
             this.listenTo(Adapt, "blockView:postRender", this.setUpBlock);        
-            this.listenTo(Adapt, "pageView:ready", this.setupScrollPointCache);
-            this.listenTo(Adapt, "pageView:ready", this.setupScrollListener);
-            this.listenTo(Adapt, "pageView:ready", this.initializeBackgrounds);
+            this.listenTo(Adapt, "pageView:ready", this.onPageViewReady);
             this.listenTo(Adapt, "device:resize", this.initializeBackgrounds);
-
             this.listenTo(Adapt, 'remove', this.removeBackgroundSwitcherView);                
+        },
+
+        onPageViewReady: function () {
+            
+            this.setupScrollPointCache();
+            this.setupScrollListener();
+            this.onScroll();
+        },
+
+        /*
+         * Calculates what blockView is in view - called on window scroll event
+         * 
+         * @method onScroll
+         * @param null
+         * @return undefined
+         */
+        onScroll: function() {
+            
+            if (Adapt.device.screenSize !=='large') return;     
+
+            var scrollPosition = $(window).scrollTop() + $(window).height() / 2;
+
+            var foundBlockData = this.findBackgroundForScrollPosition(scrollPosition);
+
+            if(!_.isUndefined(foundBlockData)) this.transitionToBackground(foundBlockData);
         },
         
         /*
@@ -52,9 +77,35 @@ define(function(require) {
             this.$backgroundContainer = $('<div class="background-switcher-container"></div>');
             pageView.$el.addClass('background-switcher-active');
             pageView.$el.prepend(this.$backgroundContainer);    
-        },    
+        },
 
+        /*
+         * Caches background switcher images' .top and .bottom properties so that we can check them easily later
+         * 
+         * @method setupScrollPointCache
+         * @return undefined
+         */   
+        setupScrollPointCache : function() {                 
+            
+            _.each(this.blockDataSet, function(blockData){                        
+                var $el = blockData.view.$el;
+                var blockTop = $el.offset().top;
+                blockData.scrollData = { top : blockTop, bottom: blockTop + $el.height() };
+            }, this);
+        },
 
+        /*
+         * Binds the onScrollMethod to the window scroll event
+         * 
+         * @method setupScrollListener
+         * @param null
+         * @return undefined
+         */
+        setupScrollListener : function(){     
+            
+            $(window).on('scroll', _.bind(this.onScroll, this));            
+        },
+        
         /*
          * Setup backgrounds for each block that has "_background-switcher" settings defined in its data/model
          * 
@@ -70,8 +121,7 @@ define(function(require) {
 
             this.setupBlockDesktopBackground(blockView);
             this.setupBlockMobileBackground(blockView);
-
-        },    
+        },
         
         /*
          * Appends desktop backgrounds to the background-switcher-container
@@ -86,7 +136,7 @@ define(function(require) {
             var $bg = $('<div class="background-switcher-background"  style="background-image: url('+bgSrc+');"></div>');
             this.blockDataSet.push({ $background:$bg , view: blockView});
             this.$backgroundContainer.prepend($bg);
-            console.log(this.blockDataSet);         
+            //console.log(this.blockDataSet);         
         },
         
         /*
@@ -99,71 +149,34 @@ define(function(require) {
         setupBlockMobileBackground : function(blockView){
 
             var options = blockView.model.get('_backgroundSwitcher');
-            blockView.$('.block-inner').addClass('background-switcher-block-mobile').css({'background': 'url('+options.mobileSrc+')'});
-        },        
-
-        /*
-         * Caches background switcher blocks top and bottom for the onScroll method
-         * 
-         * @method setupScrollPointCache
-         * @return undefined
-         */   
-        setupScrollPointCache : function(){                       
-
-            _.each(this.blockDataSet, function(blockData){                        
-                var $el = blockData.view.$el;
-                var blockTop = $el.offset().top;
-                blockData.scrollData = { top : blockTop, bottom: blockTop + $el.height() };
-            }, this);
+            blockView.$('.block-inner').addClass('background-switcher-block-mobile').css({'background-image': 'url('+options.mobileSrc+')'});
         },
 
-        /*
-         * Binds the onScrollMethos to the window scroll event
-         * 
-         * @method setupScrollListener
-         * @param null
-         * @return undefined
+        /**
+         * Checks scrollPosition to see if it's:
+         * in between the top and bottom of a background switcher image - or
+         * it's between two background switcher images (not all blocks will have backgrounds specified) or 
+         * after the last background image
+         * @param {int} scrollPosition
+         * @return {object} Reference to item in blockDataSet (or undefined if nothing found)
          */
-        setupScrollListener : function(){              
-            $(window).on('scroll', _.bind(this.onScroll, this));                
-        },
+        findBackgroundForScrollPosition: function(scrollPosition) {
+            var foundBlockData;
 
+            // check to see if scrollPosition is inside the bounds of a background image
+            foundBlockData = _.find(this.blockDataSet, function(blockDataItem, index){
+                return (blockDataItem !== this.currentBlockItem  && scrollPosition >= blockDataItem.scrollData.top && scrollPosition <= blockDataItem.scrollData.bottom);
+            }, this); 
 
-        /*
-         * Setups what background should initially be shown
-         * 
-         * @method initializeBackgrounds
-         * @param null
-         * @return undefined
-         */
-        initializeBackgrounds : function(){
-            var index = 0;             
-            var blockData = this.blockDataSet[index];
-            this.transitionWithBlockData(blockData);
-        },
+            // check to see if scrollPosition is either between two backgrounds - or after the last one
+            if(_.isUndefined(foundBlockData)) {
+                foundBlockData = _.find(this.blockDataSet, function(blockDataItem, index) {
+                    var nextBlockDataItem = this.blockDataSet[index + 1];
+                    return (blockDataItem !== this.currentBlockItem  && scrollPosition > blockDataItem.scrollData.bottom && (_.isUndefined(nextBlockDataItem) || (scrollPosition < nextBlockDataItem.scrollData.top)));
+                }, this);
+            }
 
-
-
-
-        /*
-         * Calculates what blockView is in view - called on window scroll event
-         * 
-         * @method onScroll
-         * @param null
-         * @return undefined
-         */
-        onScroll: function() {
-
-            if (Adapt.device.screenSize !=='large') return;     
-
-            var scrollPosition = $(window).scrollTop() + $(window).height() / 2;
-
-            _.each(this.blockDataSet, function(blockData, index){
-                if(index !== this.currentIndex  && scrollPosition >= blockData.scrollData.top && scrollPosition <= blockData.scrollData.bottom){                 
-                    this.transitionToBackground(index);
-                    return;
-                }                       
-            }, this);                 
+            return foundBlockData;
         },    
 
         /*
@@ -173,26 +186,11 @@ define(function(require) {
          * @param {int} the index of the background switcher blockView (this.blockDataSet[index])
          * @return undefined
          */
-        transitionToBackground : function(index){
-
-            if(index < 0 || index > this.blockDataSet.length || index === this.currentIndex) return;
-
-            this.previousIndex = this.currentIndex;
-            this.currentIndex = index;
-
-            var blockData = this.blockDataSet[index];
+        transitionToBackground : function(blockData){
+            this.currentBlockItem = blockData;
 
             Adapt.trigger('background-switcher:transitionToBackground', blockData);
 
-            this.transitionWithBlockData(blockData);
-                   
-        },
-
-        /*
-        *  Transition background using blockdata, chooses css3 or Jquery depending on browser support for css transitions
-        */
-
-        transitionWithBlockData: function(blockData) {
             if(Modernizr.csstransitions){
                 $('.active').removeClass('active');
                 blockData.$background.addClass('active');             
@@ -202,7 +200,6 @@ define(function(require) {
                 blockData.$background.animate({opacity:1}, 1000, function(){ $(this).addClass('active'); });
             } 
         },
-
 
         /*
          * Deconstructor for this view
