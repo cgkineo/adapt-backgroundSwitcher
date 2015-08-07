@@ -1,225 +1,125 @@
 
 
-define(function(require) {
-
-	var Adapt = require('coreJS/adapt');
-	var Backbone = require('backbone');
+define([
+	'coreJS/adapt'
+], function(Adapt) {
 
 	var BackgroundSwitcherView = Backbone.View.extend({
-		
-		/**
-		 * Array that stores block data for background-switching block
-		 *
-		 * @property blockDataSet
-		 * @type Object
-		 * [$background - the dom element holding this blocks desktop background]
-		 * [view - the blockView]
-		 * [scrollData - cached offset top and bottom of block dom element]
-		 * @default []
-		 */
-		blockDataSet : [],
-		/**
-		 * Reference to the item in blockDataSet that is currently being displayed
-		 */
-		currentBlockItem: undefined,
-		
-		
-		/*
-		 * @method initialize
-		 * @param {object} constructor options
-		 * @returns {undefined}
-		 */
-		initialize: function(options) {
-			
-			this.blockDataSet = [];
 
-			this.listenTo(Adapt, "pageView:postRender", this.setupBackgroundContainer);
-			this.listenTo(Adapt, "blockView:postRender", this.setUpBlock);
-			this.listenTo(Adapt, "pageView:ready", this.onPageViewReady);
-			this.listenTo(Adapt, "device:resize", this.initializeBackgrounds);
-			this.listenTo(Adapt, 'remove', this.removeBackgroundSwitcherView);
+		_blockModels: null,
+		_blockModelsIndexed: null,
+		_onBlockInview: null,
+		$backgroundContainer: null,
+		$backgrounds: null,
+		$blockElements: null,
+		_firstId: null,
+		_activeId: null,
+
+		initialize: function() {
+			this._blockModels = this.model.findDescendants('blocks').filter(function(model) {
+				return model.get("_backgroundSwitcher");
+			});
+			this._blockModelsIndexed = _.indexBy(this._blockModels, "_id");
+
+			this.listenTo(Adapt, "pageView:ready", this.onPageReady);
+			this.listenTo(Adapt, "remove", this.onRmove);
+			this._onBlockInview = _.bind(this.onBlockInview, this);
+			this.setupBackgroundContainer();
 		},
 
-		onPageViewReady: function () {
-			
-			this.setupScrollPointCache();
-			this.setupScrollListener();
-			this.onScroll();
-		},
+		onPageReady: function() {
 
-		/*
-		 * Calculates what blockView is in view - called on window scroll event
-		 *
-		 * @method onScroll
-		 * @param null
-		 * @return undefined
-		 */
-		onScroll: function() {
-			
-			if (Adapt.device.screenSize !=='large') return;
+			this.$blockElements = {};
+			this.$backgrounds = {};
 
-			var scrollPosition = $(window).scrollTop() + $(window).height() / 2;
+			for (var i = 0, l = this._blockModels.length; i < l; i++) {
+				var blockModel = this._blockModels[i];				
+				if(!blockModel.get('_backgroundSwitcher')) continue;
 
-			var foundBlockData = this.findBackgroundForScrollPosition(scrollPosition);
+				var id = blockModel.get("_id");
 
-			if(!_.isUndefined(foundBlockData)) this.transitionToBackground(foundBlockData);
-		},
-		
-		/*
-		 * Prepends a container div to the .page element that background elements will sit in
-		 *
-		 * @method setupBackgroundContainer
-		 * @param {object} pageView
-		 * @return undefined
-		 */
-		setupBackgroundContainer : function(pageView) {
+				if (!this._firstId) this._firstId = id;
 
-			this.$backgroundContainer = $('<div class="background-switcher-container"></div>');
-			pageView.$el.addClass('background-switcher-active');
-			pageView.$el.prepend(this.$backgroundContainer);
-		},
+				var $blockElement = this.$el.find("."+ id);
 
-		/*
-		 * Caches background switcher images' .top and .bottom properties so that we can check them easily later
-		 *
-		 * @method setupScrollPointCache
-		 * @return undefined
-		 */
-		setupScrollPointCache : function() {
-			
-			_.each(this.blockDataSet, function(blockData){
-				var $el = blockData.view.$el;
-				var blockTop = $el.offset().top;
-				blockData.scrollData = { top : blockTop, bottom: blockTop + $el.height() };
-			}, this);
-		},
+				$blockElement.attr("data-backgroundswitcher", id);
+				this.$blockElements[id] = $blockElement;
+				this.$blockElements[id].on("onscreen", this._onBlockInview);
 
-		/*
-		 * Binds the onScrollMethod to the window scroll event
-		 *
-		 * @method setupScrollListener
-		 * @param null
-		 * @return undefined
-		 */
-		setupScrollListener : function(){
-			
-			$(window).on('scroll', _.bind(this.onScroll, this));
-		},
-		
-		/*
-		 * Setup backgrounds for each block that has "_background-switcher" settings defined in its data/model
-		 *
-		 * @method setUpBlock
-		 * @param {object} blockView
-		 * @return undefined
-		 */
-		setUpBlock : function(blockView){
+				$blockElement.addClass('background-switcher-block');
 
-			if(!blockView.model.get('_backgroundSwitcher')) return;
+				var options = blockModel.get('_backgroundSwitcher');
 
-			blockView.$el.addClass('background-switcher-block');
+				var $backGround = $('<div class="background-switcher-background" style="background-image: url('+options.src+');"></div>');
+				this.$backgroundContainer.prepend($backGround);
+				this.$backgrounds[id] = $backGround;
 
-			this.setupBlockDesktopBackground(blockView);
-			this.setupBlockMobileBackground(blockView);
-		},
-		
-		/*
-		 * Appends desktop backgrounds to the background-switcher-container
-		 *
-		 * @method setupBlockDesktopBackground
-		 * @param {object} blockView
-		 * @return undefined
-		 */
-		setupBlockDesktopBackground: function(blockView) {
+				$blockElement.find('.block-inner').addClass('background-switcher-block-mobile').css({'background-image': 'url('+options.mobileSrc+')'});
 
-			var bgSrc = blockView.model.get('_backgroundSwitcher').src;
-			var $bg = $('<div class="background-switcher-background"  style="background-image: url('+bgSrc+');"></div>');
-			this.blockDataSet.push({ $background:$bg , view: blockView});
-			this.$backgroundContainer.prepend($bg);
-			//console.log(this.blockDataSet);
-		},
-		
-		/*
-		 * adds mobile backgrounds style to a blockView element
-		 *
-		 * @method setupBlockMobileBackground
-		 * @param {object} blockView
-		 * @return undefined
-		 */
-		setupBlockMobileBackground : function(blockView){
-
-			var options = blockView.model.get('_backgroundSwitcher');
-			blockView.$('.block-inner').addClass('background-switcher-block-mobile').css({'background-image': 'url('+options.mobileSrc+')'});
-		},
-
-		/**
-		 * Checks scrollPosition to see if it's:
-		 * in between the top and bottom of a background switcher image - or
-		 * it's between two background switcher images (not all blocks will have backgrounds specified) or
-		 * after the last background image
-		 * @param {int} scrollPosition
-		 * @return {object} Reference to item in blockDataSet (or undefined if nothing found)
-		 */
-		findBackgroundForScrollPosition: function(scrollPosition) {
-			var foundBlockData;
-
-			// check to see if scrollPosition is inside the bounds of a background image
-			foundBlockData = _.find(this.blockDataSet, function(blockDataItem, index){
-				return (blockDataItem !== this.currentBlockItem  && scrollPosition >= blockDataItem.scrollData.top && scrollPosition <= blockDataItem.scrollData.bottom);
-			}, this);
-
-			// check to see if scrollPosition is either between two backgrounds - or after the last one
-			if(_.isUndefined(foundBlockData)) {
-				foundBlockData = _.find(this.blockDataSet, function(blockDataItem, index) {
-					var nextBlockDataItem = this.blockDataSet[index + 1];
-					return (blockDataItem !== this.currentBlockItem  && scrollPosition > blockDataItem.scrollData.bottom && (_.isUndefined(nextBlockDataItem) || (scrollPosition < nextBlockDataItem.scrollData.top)));
-				}, this);
 			}
 
-			return foundBlockData;
+			this._activeId = this._firstId;
+			
+			this.showBackground();
+
 		},
 
-		/*
-		 * Handles animating from one background switcher blockView background to another
-		 *
-		 * @method transitionToBackground
-		 * @param {int} the index of the background switcher blockView (this.blockDataSet[index])
-		 * @return undefined
-		 */
-		transitionToBackground : function(blockData){
-			this.currentBlockItem = blockData;
+		setupBackgroundContainer : function() {
 
-			Adapt.trigger('background-switcher:transitionToBackground', blockData);
+			this.$backgroundContainer = $('<div class="background-switcher-container"></div>');
+			this.$el.addClass('background-switcher-active');
+			this.$el.prepend(this.$backgroundContainer);
+
+		},
+		
+
+		onBlockInview: function(event, measurments) {
+			var isOnscreen = measurments.percentFromTop < 50 && measurments.percentFromBottom < 50 ;
+			if (!isOnscreen) return;
+
+			var $target = $(event.target);
+			var id = $target.attr("data-backgroundswitcher");
+
+			if (this._activeId === id) return;
+
+			this._activeId = id;
+
+			this.showBackground();
+		},
+
+		showBackground: function() {
+			var blockModel = this._blockModelsIndexed[this._activeId];
 
 			if(Modernizr.csstransitions){
 				$('.active').removeClass('active');
-				blockData.$background.addClass('active');
+				this.$backgrounds[this._activeId].addClass('active');
 			}
 			else {
 				$('.active').animate({opacity:0}, 1000, function(){ $(this).removeClass('active'); });
-				blockData.$background.animate({opacity:1}, 1000, function(){ $(this).addClass('active'); });
+				this.$backgrounds[this._activeId].animate({opacity:1}, 1000, function(){ $(this).addClass('active'); });
 			}
 		},
 
-		/*
-		 * Deconstructor for this view
-		 *
-		 * @method removeBackgroundSwitcherView
-		 * @param {int} the index of the background switcher blockView (this.blockDataSet[index])
-		 * @return undefined
-		 */
-		removeBackgroundSwitcherView: function() {
-
-			$(window).off('scroll', _.bind(this.onScroll, this));
-			this.remove();
+		onRemove: function () {
+			for (var id in this.$blockElements) {
+				this.$blockElements[id].off("onscreen", this._onBlockInview);
+			}
+			this.$blockElements = null;
+			this.$backgroundContainer = null;
+			this.$backgrounds = null;
+			this._blockModels = null;
+			this._blockModelsIndexed = null;
+			this._onBlockInview = null;
 		}
+
 
 	});
 
-	Adapt.on("router:page", function(model) {
+	Adapt.on("pageView:postRender", function(view) {
+		var model = view.model;
 		if (model.get("_backgroundSwitcher")) {
 			if (model.get("_backgroundSwitcher")._isActive) {
-				new BackgroundSwitcherView();
+				new BackgroundSwitcherView({model: model, el: view.el });
 			}
 		}
 	});
