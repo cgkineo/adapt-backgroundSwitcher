@@ -23,7 +23,6 @@ define([
 
 			this.listenTo(Adapt, "pageView:ready", this.onPageReady);
 			this.listenTo(Adapt, "remove", this.onRmove);
-			this._onBlockInview = _.bind(this.onBlockInview, this);
 			this.setupBackgroundContainer();
 		},
 
@@ -31,6 +30,7 @@ define([
 
 			this.$blockElements = {};
 			this.$backgrounds = {};
+			this.callbacks = {};
 
 			for (var i = 0, l = this._blockModels.length; i < l; i++) {
 				var blockModel = this._blockModels[i];				
@@ -44,7 +44,8 @@ define([
 
 				$blockElement.attr("data-backgroundswitcher", id);
 				this.$blockElements[id] = $blockElement;
-				this.$blockElements[id].on("onscreen", this._onBlockInview);
+				this.callbacks[id] = _.bind(this.onBlockInview, this);
+				this.$blockElements[id].on("onscreen", this.callbacks[id]);
 
 				$blockElement.addClass('background-switcher-block');
 
@@ -74,7 +75,7 @@ define([
 		
 
 		onBlockInview: function(event, measurments) {
-			var isOnscreen = measurments.percentFromTop < 50 && measurments.percentFromBottom < 50 ;
+			var isOnscreen = measurments.percentFromTop < 80 && measurments.percentFromBottom < 80 ;
 			if (!isOnscreen) return;
 
 			var $target = $(event.target);
@@ -102,7 +103,7 @@ define([
 
 		onRemove: function () {
 			for (var id in this.$blockElements) {
-				this.$blockElements[id].off("onscreen", this._onBlockInview);
+				this.$blockElements[id].off("onscreen", this.callbacks[id]);
 			}
 			this.$blockElements = null;
 			this.$backgroundContainer = null;
