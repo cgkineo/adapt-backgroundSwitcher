@@ -19,6 +19,10 @@ define([
 			this._blockModels = this.model.findDescendants('blocks').filter(function(model) {
 				return model.get("_backgroundSwitcher");
 			});
+			if(this._blockModels.length == 0) {
+			        this.onRemove();
+			        return;
+			}
 			this._blockModelsIndexed = _.indexBy(this._blockModels, "_id");
 
 			this.listenTo(Adapt, "pageView:ready", this.onPageReady);
