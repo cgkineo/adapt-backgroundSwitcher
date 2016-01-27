@@ -1,0 +1,76 @@
+{
+  "type":"object",
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "id": "http://jsonschema.net",
+  "required":false,
+  "properties":{
+    "pluginLocations": {
+      "type":"object",
+      "required":true,
+      "properties":{
+        "config": {
+          "type":"object"
+        },
+        "course": {
+          "type":"object"
+        },
+        "contentobject": {
+          "type":"object",
+          "properties":{
+            "_backgroundSwitcher": {
+              "type":"object",
+              "required":true,
+              "legend": "BackgroundSwitcher",
+              "properties":{
+                "_isActive": {
+                  "type":"boolean",
+                  "required":true,
+                  "title": "Enabled",
+                  "inputType": { "type": "Boolean", "options": [false, true]},
+                  "validators": [],
+                  "help": "Set to true to enable the background switcher, false to disable it."
+                }
+              }
+            }
+          }
+        },
+        "article": {
+          "type":"object"
+        },
+        "block": {
+          "type":"object",
+          "properties":{
+            "_backgroundSwitcher": {
+              "type":"object",
+              "required":true,
+              "legend": "Background Switcher",
+              "properties":{
+                "mobileSrc": {
+                  "type":"string",
+                  "required":true,
+                  "title": "Background switcher image (Mobile)",
+                  "default": "",
+                  "inputType": "Asset:image",
+                  "validators": ["required"],
+                  "help": "The background image you want shown for this block when the course is viewed at mobile resolution"
+                },
+                "src": {
+                  "type":"string",
+                  "required":true,
+                  "title": "Background switcher image (Desktop)",
+                  "default": "",
+                  "inputType": "Asset:image",
+                  "validators": ["required"],
+                  "help": "The background image you want shown for this block when the course is viewed at desktop resolution"
+                }
+              }
+            }
+          }
+        },
+        "component": {
+          "type":"object"
+        }
+      }
+    }
+  }
+}
