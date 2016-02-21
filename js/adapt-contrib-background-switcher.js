@@ -96,7 +96,7 @@ define([
 			var blockModel = this._blockModelsIndexed[this._activeId];
 
 			if(Modernizr.csstransitions){
-				this.$('background-switcher-background.active').removeClass('active');
+				this.$('.background-switcher-background.active').removeClass('active');
 				this.$backgrounds[this._activeId].addClass('active');
 			}
 			else {
