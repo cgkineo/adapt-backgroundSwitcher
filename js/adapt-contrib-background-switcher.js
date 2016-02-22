@@ -96,11 +96,11 @@ define([
 			var blockModel = this._blockModelsIndexed[this._activeId];
 
 			if(Modernizr.csstransitions){
-				$('.active').removeClass('active');
+				this.$('.background-switcher-background.active').removeClass('active');
 				this.$backgrounds[this._activeId].addClass('active');
 			}
 			else {
-				$('.active').animate({opacity:0}, 1000, function(){ $(this).removeClass('active'); });
+				this.$('background-switcher-background.active').animate({opacity:0}, 1000, function(){ $(this).removeClass('active'); });
 				this.$backgrounds[this._activeId].animate({opacity:1}, 1000, function(){ $(this).addClass('active'); });
 			}
 		},
