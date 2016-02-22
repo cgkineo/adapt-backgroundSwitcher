@@ -1,25 +1,18 @@
 {
-    "name": "adapt-contrib-background-switcher",
-		"repository": "git://github.com/cgkineo/adapt-background-switcher.git",
-    "version": "2.0.0",
+    "name": "adapt-background-switcher",
+    "repository": "git://github.com/cgkineo/adapt-background-switcher",
     "framework": "^2.0.0",
-    "homepage": "https://github.com/adaptlearning/adapt-contrib-background-switcher",
-    "authors": [
-      "Salamat Ali <salamatmoali@gmail.com>",
-      "Stuart O'Hare <develop@stuartohare.com>"
-    ],
+    "version": "2.0.0",
+    "homepage": "https://github.com/cgkineo/adapt-background-switcher",
+    "issues": "https://github.com/cgkineo/adapt-background-switcher/issues/",
     "displayName": "Background Switcher",
-    "extension": "backgroundSwitcher",
+    "extension": "background-switcher",
     "description": "Switches background image as you move through blocks",
     "main": "/js/adapt-contrib-background-switcher.js",
-    "assetFields": [
-        "_backgroundSwitcher.src",
-        "_backgroundSwitcher.mobileSrc"
-    ],
     "keywords": [
         "adapt-plugin",
         "adapt-extension"
     ],
-    "license": "GPLv3",
+    "license": "GPL-3.0",
     "targetAttribute": "_backgroundSwitcher"
 }
