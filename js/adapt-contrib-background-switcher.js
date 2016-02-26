@@ -26,7 +26,7 @@ define([
 			this._blockModelsIndexed = _.indexBy(this._blockModels, "_id");
 
 			this.listenTo(Adapt, "pageView:ready", this.onPageReady);
-			this.listenTo(Adapt, "remove", this.onRmove);
+			this.listenTo(Adapt, "remove", this.onRemove);
 			this.setupBackgroundContainer();
 		},
 
@@ -78,8 +78,8 @@ define([
 		},
 		
 
-		onBlockInview: function(event, measurments) {
-			var isOnscreen = measurments.percentFromTop < 80 && measurments.percentFromBottom < 80 ;
+		onBlockInview: function(event, measurements) {
+			var isOnscreen = measurements.percentFromTop < 80 && measurements.percentFromBottom < 80 ;
 			if (!isOnscreen) return;
 
 			var $target = $(event.target);
