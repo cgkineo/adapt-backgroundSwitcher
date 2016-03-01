@@ -14,6 +14,7 @@ define([
 		$blockElements: null,
 		_firstId: null,
 		_activeId: null,
+		windowHeight: null,
 
 		initialize: function() {
 			this._blockModels = this.model.findDescendants('blocks').filter(function(model) {
@@ -27,6 +28,13 @@ define([
 
 			this.listenTo(Adapt, "pageView:ready", this.onPageReady);
 			this.listenTo(Adapt, "remove", this.onRemove);
+
+			this._onScroll = _.debounce(_.bind(this.onScroll, this), 1);
+			this._onResize = _.debounce(_.bind(this.onResize, this), 1);
+
+			$(window).on("scroll", this._onScroll);
+			$(window).on("resize", this._onResize);
+
 			this.setupBackgroundContainer();
 		},
 
@@ -37,7 +45,7 @@ define([
 			this.callbacks = {};
 
 			for (var i = 0, l = this._blockModels.length; i < l; i++) {
-				var blockModel = this._blockModels[i];				
+				var blockModel = this._blockModels[i];	
 				if(!blockModel.get('_backgroundSwitcher')) continue;
 
 				var id = blockModel.get("_id");
@@ -48,8 +56,6 @@ define([
 
 				$blockElement.attr("data-backgroundswitcher", id);
 				this.$blockElements[id] = $blockElement;
-				this.callbacks[id] = _.bind(this.onBlockInview, this);
-				this.$blockElements[id].on("onscreen", this.callbacks[id]);
 
 				$blockElement.addClass('background-switcher-block');
 
@@ -65,7 +71,10 @@ define([
 
 			this._activeId = this._firstId;
 			
-			this.showBackground();
+			this.$backgroundContainer.imageready(_.bind(function() {
+				this.$backgroundContainer.css("opacity", 1);
+				this.showBackground();	
+			}, this));
 
 		},
 
@@ -74,22 +83,42 @@ define([
 			this.$backgroundContainer = $('<div class="background-switcher-container"></div>');
 			this.$el.addClass('background-switcher-active');
 			this.$el.prepend(this.$backgroundContainer);
+			this.windowHeight = $(window).height();
+			this.$backgroundContainer.height(this.windowHeight);
 
 		},
-		
 
-		onBlockInview: function(event, measurements) {
-			var isOnscreen = measurements.percentFromTop < 80 && measurements.percentFromBottom < 80 ;
-			if (!isOnscreen) return;
+		onResize: function() {
+			//only change the height of the background container if it changes by more than 50px
+			//the ipad navigation bar causes the window height to change and makes the picture jump otherwise
+			var windowHeight = $(window).height();
+			var absoluteDifference = Math.abs(this.windowHeight - windowHeight);
+			if (absoluteDifference > 50) {
+				this.windowHeight = $(window).height();
+				this.$backgroundContainer.height(this.windowHeight);
+			}
+		},
 
-			var $target = $(event.target);
-			var id = $target.attr("data-backgroundswitcher");
+		onScroll: function() {
+			for (var i = 0, l = this._blockModels.length; i < l; i++) {
 
-			if (this._activeId === id) return;
+				var blockModel = this._blockModels[i];	
+				if(!blockModel.get('_backgroundSwitcher')) continue;
 
-			this._activeId = id;
+				var id = blockModel.get("_id");
 
-			this.showBackground();
+				var measurements = this.$blockElements[id].onscreen();
+
+				var isOnscreen = measurements.percentFromTop < 80 && measurements.percentFromBottom < 80 ;
+				if (!isOnscreen) continue;
+
+				if (this._activeId === id) return;
+
+				this._activeId = id;
+
+				return this.showBackground();
+
+			}
 		},
 
 		showBackground: function() {
@@ -106,9 +135,7 @@ define([
 		},
 
 		onRemove: function () {
-			for (var id in this.$blockElements) {
-				this.$blockElements[id].off("onscreen", this.callbacks[id]);
-			}
+			$(window).off("scroll", this._onScroll);
 			this.$blockElements = null;
 			this.$backgroundContainer = null;
 			this.$backgrounds = null;
