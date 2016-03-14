@@ -135,6 +135,7 @@ define([
 		},
 
 		onRemove: function () {
+			this.stopListening(Adapt, "pageView:ready", this.onPageReady);
 			$(window).off("scroll", this._onScroll);
 			this.$blockElements = null;
 			this.$backgroundContainer = null;
