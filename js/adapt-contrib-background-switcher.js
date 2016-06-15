@@ -25,8 +25,8 @@ define([
 			}
 			this._blockModelsIndexed = _.indexBy(this._blockModels, "_id");
 
-			this.listenTo(Adapt, "pageView:ready", this.onPageReady);
-			this.listenTo(Adapt, "remove", this.onRemove);
+			this.listenToOnce(Adapt, "pageView:ready", this.onPageReady);
+			this.listenToOnce(Adapt, "remove", this.onRemove);
 			this.setupBackgroundContainer();
 		},
 
