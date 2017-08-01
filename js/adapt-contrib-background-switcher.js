@@ -115,6 +115,8 @@ define([
 			this._blockModels = null;
 			this._blockModelsIndexed = null;
 			this._onBlockInview = null;
+
+			this.remove
 		}
 
 
