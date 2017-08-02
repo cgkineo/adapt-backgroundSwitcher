@@ -1,7 +1,5 @@
-
-
 define([
-	'coreJS/adapt'
+	'core/js/adapt'
 ], function(Adapt) {
 
 	var BackgroundSwitcherView = Backbone.View.extend({
@@ -66,7 +64,6 @@ define([
 			this._activeId = this._firstId;
 			
 			this.showBackground();
-
 		},
 
 		setupBackgroundContainer : function() {
@@ -74,12 +71,11 @@ define([
 			this.$backgroundContainer = $('<div class="background-switcher-container"></div>');
 			this.$el.addClass('background-switcher-active');
 			this.$el.prepend(this.$backgroundContainer);
-
 		},
 		
 
 		onBlockInview: function(event, measurements) {
-			var isOnscreen = measurements.percentFromTop < 80 && measurements.percentFromBottom < 80 ;
+			var isOnscreen = measurements.percentFromTop < 80 && measurements.percentFromBottom < 80;
 			if (!isOnscreen) return;
 
 			var $target = $(event.target);
@@ -100,7 +96,7 @@ define([
 				this.$backgrounds[this._activeId].addClass('active');
 			}
 			else {
-				this.$('background-switcher-background.active').animate({opacity:0}, 1000, function(){ $(this).removeClass('active'); });
+				this.$('.background-switcher-background.active').animate({opacity:0}, 1000, function(){ $(this).removeClass('active'); });
 				this.$backgrounds[this._activeId].animate({opacity:1}, 1000, function(){ $(this).addClass('active'); });
 			}
 		},
@@ -115,9 +111,9 @@ define([
 			this._blockModels = null;
 			this._blockModelsIndexed = null;
 			this._onBlockInview = null;
+
+			this.remove();
 		}
-
-
 	});
 
 	Adapt.on("pageView:postRender", function(view) {
