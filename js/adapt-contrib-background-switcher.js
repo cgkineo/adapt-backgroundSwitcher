@@ -14,6 +14,8 @@ define([
 		_activeId: null,
 
 		initialize: function() {
+			this.disableSmoothScrolling();
+			
 			this._blockModels = this.model.findDescendants('blocks').filter(function(model) {
 				return model.get("_backgroundSwitcher");
 			});
@@ -73,6 +75,20 @@ define([
 			this.$el.prepend(this.$backgroundContainer);
 		},
 		
+		// Turn off smooth scrolling in IE and Edge to stop the background from flickering on scroll
+		disableSmoothScrolling: function() {
+			if(navigator.userAgent.match(/MSIE 10/i) || navigator.userAgent.match(/Trident\/7\./) || navigator.userAgent.match(/Edge/)) {
+				$('body').on("mousewheel", function (event) {
+					event.preventDefault();
+					// v2 jquery
+					// var wd = event.deltaY * event.deltaFactor;
+					// v3 jquery
+					var wd = event.originalEvent.wheelDelta;
+					var csp = window.pageYOffset;
+					window.scrollTo(0, csp - wd);
+				});
+			}
+		},
 
 		onBlockInview: function(event, measurements) {
 			var isOnscreen = measurements.percentFromTop < 80 && measurements.percentFromBottom < 80;
