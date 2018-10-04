@@ -77,17 +77,15 @@ define([
 		
 		// Turn off smooth scrolling in IE and Edge to stop the background from flickering on scroll
 		disableSmoothScrolling: function() {
-			if(navigator.userAgent.match(/MSIE 10/i) || navigator.userAgent.match(/Trident\/7\./) || navigator.userAgent.match(/Edge/)) {
-				$('body').on("mousewheel", function (event) {
-					event.preventDefault();
-					// v2 jquery
-					// var wd = event.deltaY * event.deltaFactor;
-					// v3 jquery
-					var wd = event.originalEvent.wheelDelta;
-					var csp = window.pageYOffset;
-					window.scrollTo(0, csp - wd);
-				});
-			}
+			var browser = Adapt.device.browser;
+
+			if (browser !== "internet explorer" && browser !== "microsoft edge") return;
+
+			$("body").on("wheel", function(event) {
+				event.preventDefault();
+
+				window.scrollTo(0, window.pageYOffset + event.originalEvent.deltaY);
+			});
 		},
 
 		onBlockInview: function(event, measurements) {
