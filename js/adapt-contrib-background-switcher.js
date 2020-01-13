@@ -6,7 +6,6 @@ define([
 
 		_blockModels: null,
 		_blockModelsIndexed: null,
-		_onBlockInview: null,
 		$backgroundContainer: null,
 		$backgrounds: null,
 		$blockElements: null,
@@ -14,6 +13,8 @@ define([
 		_activeId: null,
 
 		initialize: function() {
+			_.bindAll(this, 'onBlockInview');
+
 			this.disableSmoothScrolling();
 
 			this._blockModels = _.filter(this.model.findDescendantModels('blocks'), function(model) {
@@ -24,6 +25,7 @@ define([
 				this.onRemove();
 				return;
 			}
+
 			this._blockModelsIndexed = _.indexBy(this._blockModels, '_id');
 
 			this.listenTo(Adapt, {
@@ -36,7 +38,6 @@ define([
 		onPageReady: function() {
 			this.$blockElements = {};
 			this.$backgrounds = {};
-			this.callbacks = {};
 
 			for (var i = 0, l = this._blockModels.length; i < l; i++) {
 				var blockModel = this._blockModels[i];
@@ -48,20 +49,17 @@ define([
 
 				var $blockElement = this.$el.find('.'+ id);
 
-				$blockElement.attr('data-backgroundswitcher', id);
-				this.$blockElements[id] = $blockElement;
-				this.callbacks[id] = this.onBlockInview.bind(this);
-				this.$blockElements[id].on('onscreen', this.callbacks[id]);
-
-				$blockElement.addClass('background-switcher-block');
+				$blockElement.attr('data-backgroundswitcher', id).addClass('background-switcher-block');
+				$blockElement.on('onscreen.background-switcher', this.onBlockInview);
 
 				var options = blockModel.get('_backgroundSwitcher');
 
-				var $backGround = $('<div class="background-switcher-background" style="background-image: url('+options.src+');"></div>');
+				var $backGround = $('<div class="background-switcher-background" style="background-image: url('+ options.src +');"></div>');
 				this.$backgroundContainer.prepend($backGround);
 				this.$backgrounds[id] = $backGround;
 
-				$blockElement.find('.block-inner').addClass('background-switcher-block-mobile').css({'background-image': 'url('+options.mobileSrc+')'});
+				$blockElement.find('.block-inner').addClass('background-switcher-block-mobile').css({'background-image': 'url('+ options.mobileSrc +')'});
+				this.$blockElements[id] = $blockElement;
 			}
 
 			this._activeId = this._firstId;
@@ -70,7 +68,6 @@ define([
 		},
 
 		setupBackgroundContainer : function() {
-
 			this.$backgroundContainer = $('<div class="background-switcher-container"></div>');
 			this.$el.addClass('background-switcher-active');
 			this.$el.prepend(this.$backgroundContainer);
@@ -96,7 +93,7 @@ define([
 			if (!isOnscreen) return;
 
 			var $target = $(event.target);
-			var id = $target.attr("data-backgroundswitcher");
+			var id = $target.attr('data-backgroundswitcher');
 
 			if (this._activeId === id) return;
 
@@ -120,14 +117,13 @@ define([
 
 		onRemove: function () {
 			for (var id in this.$blockElements) {
-				this.$blockElements[id].off('onscreen', this.callbacks[id]);
+				this.$blockElements[id].off('onscreen.background-switcher');
 			}
 			this.$blockElements = null;
 			this.$backgroundContainer = null;
 			this.$backgrounds = null;
 			this._blockModels = null;
 			this._blockModelsIndexed = null;
-			this._onBlockInview = null;
 
 			this.remove();
 		}
