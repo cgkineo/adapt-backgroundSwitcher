@@ -42,16 +42,16 @@ define([
 				var blockModel = this._blockModels[i];
 				if(!blockModel.get('_backgroundSwitcher')) continue;
 
-				var id = blockModel.get("_id");
+				var id = blockModel.get('_id');
 
 				if (!this._firstId) this._firstId = id;
 
-				var $blockElement = this.$el.find("."+ id);
+				var $blockElement = this.$el.find('.'+ id);
 
-				$blockElement.attr("data-backgroundswitcher", id);
+				$blockElement.attr('data-backgroundswitcher', id);
 				this.$blockElements[id] = $blockElement;
-				this.callbacks[id] = _.bind(this.onBlockInview, this);
-				this.$blockElements[id].on("onscreen", this.callbacks[id]);
+				this.callbacks[id] = this.onBlockInview.bind(this);
+				this.$blockElements[id].on('onscreen', this.callbacks[id]);
 
 				$blockElement.addClass('background-switcher-block');
 
@@ -76,7 +76,9 @@ define([
 			this.$el.prepend(this.$backgroundContainer);
 		},
 
-		// Turn off smooth scrolling in IE and Edge to stop the background from flickering on scroll
+		/**
+		 * Turn off smooth scrolling in IE and Edge to stop the background from flickering on scroll
+		 */
 		disableSmoothScrolling: function() {
 			var browser = Adapt.device.browser;
 
@@ -118,7 +120,7 @@ define([
 
 		onRemove: function () {
 			for (var id in this.$blockElements) {
-				this.$blockElements[id].off("onscreen", this.callbacks[id]);
+				this.$blockElements[id].off('onscreen', this.callbacks[id]);
 			}
 			this.$blockElements = null;
 			this.$backgroundContainer = null;

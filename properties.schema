@@ -1,53 +1,53 @@
 {
-  "type":"object",
+  "type": "object",
   "$schema": "http://json-schema.org/draft-04/schema",
   "id": "http://jsonschema.net",
   "required":false,
   "properties":{
     "pluginLocations": {
-      "type":"object",
-      "required":true,
+      "type": "object",
+      "required": true,
       "properties":{
         "config": {
-          "type":"object"
+          "type": "object"
         },
         "course": {
-          "type":"object"
+          "type": "object"
         },
         "contentobject": {
-          "type":"object",
+          "type": "object",
           "properties":{
             "_backgroundSwitcher": {
-              "type":"object",
-              "required":true,
+              "type": "object",
+              "required": true,
               "legend": "BackgroundSwitcher",
               "properties":{
                 "_isActive": {
-                  "type":"boolean",
-                  "required":true,
+                  "type": "boolean",
+                  "required": true,
+                  "default": false,
                   "title": "Enabled",
-                  "inputType": { "type": "Boolean", "options": [false, true]},
-                  "validators": [],
-                  "help": "Set to true to enable the background switcher, false to disable it."
+                  "inputType": "Checkbox",
+                  "validators": []
                 }
               }
             }
           }
         },
         "article": {
-          "type":"object"
+          "type": "object"
         },
         "block": {
-          "type":"object",
+          "type": "object",
           "properties":{
             "_backgroundSwitcher": {
-              "type":"object",
-              "required":true,
+              "type": "object",
+              "required": true,
               "legend": "Background Switcher",
               "properties":{
                 "mobileSrc": {
-                  "type":"string",
-                  "required":true,
+                  "type": "string",
+                  "required": true,
                   "title": "Background switcher image (Mobile)",
                   "default": "",
                   "inputType": "Asset:image",
@@ -55,8 +55,8 @@
                   "help": "The background image you want shown for this block when the course is viewed at mobile resolution"
                 },
                 "src": {
-                  "type":"string",
-                  "required":true,
+                  "type": "string",
+                  "required": true,
                   "title": "Background switcher image (Desktop)",
                   "default": "",
                   "inputType": "Asset:image",
@@ -68,7 +68,7 @@
           }
         },
         "component": {
-          "type":"object"
+          "type": "object"
         }
       }
     }
