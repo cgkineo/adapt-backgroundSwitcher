@@ -15,18 +15,21 @@ define([
 
 		initialize: function() {
 			this.disableSmoothScrolling();
-			
-			this._blockModels = this.model.findDescendants('blocks').filter(function(model) {
-				return model.get("_backgroundSwitcher");
-			});
-			if(this._blockModels.length == 0) {
-			        this.onRemove();
-			        return;
-			}
-			this._blockModelsIndexed = _.indexBy(this._blockModels, "_id");
 
-			this.listenTo(Adapt, "pageView:ready", this.onPageReady);
-			this.listenTo(Adapt, "remove", this.onRemove);
+			this._blockModels = this.model.findDescendants('blocks').filter(function(model) {
+				return model.get('_backgroundSwitcher');
+			});
+
+			if (this._blockModels.length === 0) {
+				this.onRemove();
+				return;
+			}
+			this._blockModelsIndexed = _.indexBy(this._blockModels, '_id');
+
+			this.listenTo(Adapt, {
+				'pageView:ready': this.onPageReady,
+				remove: this.onRemove
+			});
 			this.setupBackgroundContainer();
 		},
 
@@ -37,7 +40,7 @@ define([
 			this.callbacks = {};
 
 			for (var i = 0, l = this._blockModels.length; i < l; i++) {
-				var blockModel = this._blockModels[i];				
+				var blockModel = this._blockModels[i];
 				if(!blockModel.get('_backgroundSwitcher')) continue;
 
 				var id = blockModel.get("_id");
@@ -60,11 +63,10 @@ define([
 				this.$backgrounds[id] = $backGround;
 
 				$blockElement.find('.block-inner').addClass('background-switcher-block-mobile').css({'background-image': 'url('+options.mobileSrc+')'});
-
 			}
 
 			this._activeId = this._firstId;
-			
+
 			this.showBackground();
 		},
 
@@ -74,14 +76,14 @@ define([
 			this.$el.addClass('background-switcher-active');
 			this.$el.prepend(this.$backgroundContainer);
 		},
-		
+
 		// Turn off smooth scrolling in IE and Edge to stop the background from flickering on scroll
 		disableSmoothScrolling: function() {
 			var browser = Adapt.device.browser;
 
-			if (browser !== "internet explorer" && browser !== "microsoft edge") return;
+			if (browser !== 'internet explorer' && browser !== 'microsoft edge') return;
 
-			$("body").on("wheel", function(event) {
+			$('body').on('wheel', function(event) {
 				event.preventDefault();
 
 				window.scrollTo(0, window.pageYOffset + event.originalEvent.deltaY);
@@ -130,12 +132,10 @@ define([
 		}
 	});
 
-	Adapt.on("pageView:postRender", function(view) {
+	Adapt.on('pageView:postRender', function(view) {
 		var model = view.model;
-		if (model.get("_backgroundSwitcher")) {
-			if (model.get("_backgroundSwitcher")._isActive) {
-				new BackgroundSwitcherView({model: model, el: view.el });
-			}
+		if (model.get('_backgroundSwitcher') && model.get('_backgroundSwitcher')._isActive) {
+			new BackgroundSwitcherView({model: model, el: view.el });
 		}
 	});
 
