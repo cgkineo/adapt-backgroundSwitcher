@@ -36,9 +36,8 @@ define([
 			this.$blockElements = {};
 			this.$backgrounds = {};
 
-			for (var i = 0, l = this._blockModels.length; i < l; i++) {
-				var blockModel = this._blockModels[i];
-				if(!blockModel.get('_backgroundSwitcher')) continue;
+			this._blockModels.forEach(function(blockModel) {
+				if (!blockModel.get('_backgroundSwitcher')) return;
 
 				var id = blockModel.get('_id');
 
@@ -57,7 +56,7 @@ define([
 
 				$blockElement.find('.block-inner').addClass('background-switcher-block-mobile').css({'background-image': 'url('+ options.mobileSrc +')'});
 				this.$blockElements[id] = $blockElement;
-			}
+			}.bind(this));
 
 			this._activeId = this._firstId;
 
