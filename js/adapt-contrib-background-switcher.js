@@ -5,7 +5,6 @@ define([
 	var BackgroundSwitcherView = Backbone.View.extend({
 
 		_blockModels: null,
-		_blockModelsIndexed: null,
 		$backgroundContainer: null,
 		$backgrounds: null,
 		$blockElements: null,
@@ -25,8 +24,6 @@ define([
 				this.onRemove();
 				return;
 			}
-
-			this._blockModelsIndexed = _.indexBy(this._blockModels, '_id');
 
 			this.listenTo(Adapt, {
 				'pageView:ready': this.onPageReady,
@@ -103,8 +100,6 @@ define([
 		},
 
 		showBackground: function() {
-			var blockModel = this._blockModelsIndexed[this._activeId];
-
 			if(Modernizr.csstransitions){
 				this.$('.background-switcher-background.active').removeClass('active');
 				this.$backgrounds[this._activeId].addClass('active');
@@ -123,7 +118,6 @@ define([
 			this.$backgroundContainer = null;
 			this.$backgrounds = null;
 			this._blockModels = null;
-			this._blockModelsIndexed = null;
 
 			this.remove();
 		}
