@@ -37,8 +37,6 @@ define([
 			this.$backgrounds = {};
 
 			this._blockModels.forEach(function(blockModel) {
-				if (!blockModel.get('_backgroundSwitcher')) return;
-
 				var id = blockModel.get('_id');
 
 				if (!this._firstId) this._firstId = id;
