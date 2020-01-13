@@ -16,7 +16,7 @@ define([
 		initialize: function() {
 			this.disableSmoothScrolling();
 
-			this._blockModels = this.model.findDescendants('blocks').filter(function(model) {
+			this._blockModels = _.filter(this.model.findDescendantModels('blocks'), function(model) {
 				return model.get('_backgroundSwitcher');
 			});
 
@@ -34,7 +34,6 @@ define([
 		},
 
 		onPageReady: function() {
-
 			this.$blockElements = {};
 			this.$backgrounds = {};
 			this.callbacks = {};
