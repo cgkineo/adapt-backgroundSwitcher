@@ -13,7 +13,7 @@
         "linkText": "View",
         "duration": "2 mins",
         "_backgroundSwitcher": {
-            "_isActive":true
+            "_isEnabled": true
         }
     }
 
@@ -26,7 +26,6 @@
         "title": "Block 1",
         "body": "",
         "_backgroundSwitcher": {
-            "src": "course/en/images/bg_switcher_04.jpg",
-            "mobileSrc": "course/en/images/bg_switcher_mobile_04.jpg"
+            "src": "course/en/images/example.jpg"
         }
     }

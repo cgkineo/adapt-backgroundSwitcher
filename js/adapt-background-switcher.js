@@ -43,16 +43,16 @@ define([
 
         var $blockElement = this.$el.find('.'+ id);
 
-        $blockElement.attr('data-backgroundswitcher', id).addClass('background-switcher-block');
+        $blockElement.attr('data-backgroundswitcher', id).addClass('has-background-switcher-image');
         $blockElement.on('onscreen.background-switcher', this.onBlockInview);
 
         var options = blockModel.get('_backgroundSwitcher');
 
-        var $backGround = $('<div class="background-switcher-background" style="background-image: url('+ options.src +');"></div>');
+        var $backGround = $('<div class="background-switcher__item" style="background-image: url('+ options.src +');"></div>');
         this.$backgroundContainer.prepend($backGround);
         this.$backgrounds[id] = $backGround;
 
-        $blockElement.find('.block-inner').addClass('background-switcher-block-mobile').css({'background-image': 'url('+ options.mobileSrc +')'});
+        // $blockElement.find('.block__inner').addClass('background-switcher-block-mobile').css({'background-image': 'url('+ options.mobileSrc +')'});
         this.$blockElements[id] = $blockElement;
       }.bind(this));
 
@@ -62,24 +62,23 @@ define([
     },
 
     setupBackgroundContainer : function() {
-      this.$backgroundContainer = $('<div class="background-switcher-container"></div>');
-      this.$el.addClass('background-switcher-active');
-      this.$el.prepend(this.$backgroundContainer);
+      this.$backgroundContainer = $('<div class="background-switcher__container"></div>');
+      $('body').addClass('background-switcher-active');
+      $('body').prepend(this.$backgroundContainer);
     },
 
     /**
      * Turn off smooth scrolling in IE and Edge to stop the background from flickering on scroll
      */
     disableSmoothScrolling: function() {
-      var browser = Adapt.device.browser;
-
-      if (browser !== 'internet explorer' && browser !== 'microsoft edge') return;
-
-      $('body').on('wheel', function(event) {
-        event.preventDefault();
-
-        window.scrollTo(0, window.pageYOffset + event.originalEvent.deltaY);
-      });
+      if(navigator.userAgent.match(/MSIE 10/i) || navigator.userAgent.match(/Trident\/7\./) || navigator.userAgent.match(/Edge/)) {
+        $('body').on("mousewheel", function (event) {
+          event.preventDefault();
+          var wd = event.deltaY * event.deltaFactor;
+          var csp = window.pageYOffset;
+          window.scrollTo(0, csp - wd);
+        });
+      }
     },
 
     onBlockInview: function(event, measurements) {
@@ -97,13 +96,13 @@ define([
     },
 
     showBackground: function() {
-      if(Modernizr.csstransitions){
-        this.$('.background-switcher-background.active').removeClass('active');
-        this.$backgrounds[this._activeId].addClass('active');
+      if (Modernizr.csstransitions){
+        $('.background-switcher__item.is-active').removeClass('is-active');
+        this.$backgrounds[this._activeId].addClass('is-active');
       }
       else {
-        this.$('.background-switcher-background.active').animate({opacity:0}, 1000, function(){ $(this).removeClass('active'); });
-        this.$backgrounds[this._activeId].animate({opacity:1}, 1000, function(){ $(this).addClass('active'); });
+        $('.background-switcher__item.is-active').animate({ opacity: 0 }, 0, function(){ $(this).removeClass('is-active'); });
+        this.$backgrounds[this._activeId].animate({ opacity: 1 }, 0, function(){ $(this).addClass('is-active'); });
       }
     },
 
@@ -117,12 +116,29 @@ define([
       this._blockModels = null;
 
       this.remove();
+    },
+
+    remove: function() {
+      Adapt.trigger('plugin:beginWait');
+
+      _.defer(_.bind(function() {
+        this.$el.off('onscreen.adaptView');
+        this._isRemoved = true;
+        this.model.setOnChildren('_isReady', false);
+        this.model.set('_isReady', false);
+        $('.background-switcher__container').remove();
+        this.stopListening();
+        Adapt.trigger('plugin:endWait');
+      }, this));
+
+      return this;
     }
+
   });
 
   Adapt.on('pageView:postRender', function(view) {
     var model = view.model;
-    if (model.get('_backgroundSwitcher') && model.get('_backgroundSwitcher')._isActive) {
+    if (model.get('_backgroundSwitcher') && model.get('_backgroundSwitcher')._isEnabled) {
       new BackgroundSwitcherView({model: model, el: view.el });
     }
   });

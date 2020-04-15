@@ -1,37 +1,31 @@
-adapt-background-switcher
-===============
+# adapt-background-switcher
 
-An Adapt extension to switch between block backgrounds as the users scrolls the page
+An Adapt extension to switch between page backgrounds as the users scrolls the page
 
-Usage
- ------
+## Settings Overview
 
-## Settings overview
+### Attributes
 
-Extends block data/model
+Content Objects
 
-#### _backgroundSwitcher
+**\_backgroundSwitcher** (object): The Background Switcher attributes group contains the value for **\_isEnabled**.
 
-Background Switcher block options object
+>**\_isEnabled** (boolean): Turns on and off the Background Switcher extension.
 
+Blocks
 
-#### _backgroundSwitcher.src
+**\_backgroundSwitcher** (object): The Background Switcher attributes group contains the value for **src**.
 
-This is the background image source used when page is viewed at desktop resolution
-
-
-#### _backgroundSwitcher.mobileSrc
-
-This is the background image source used when page is viewed at mobile resolution
+>**src** (string): Sets the background image that should appear when this block comes into view.
 
 ## Limitations
 
-To Be Completed
+To be completed
 
-## Browser spec
-
-Tested on: -
-Chrome 34.0.1847.137,
-Safari 6.1.3 (7537.75.14)
-Firefox 28.0
-Internet Explorer 8
+----------------------------
+**Version number:**  3.0.0  
+**Framework versions:**  5+  
+**Author / maintainer:** CGKineo  
+**Accessibility support:** No  
+**RTL support:** Yes  
+**Cross-platform coverage:** Chrome, Chrome for Android, Firefox (ESR + latest version), Edge, IE11, Safari 12+13 for macOS/iOS/iPadOS, Opera  
