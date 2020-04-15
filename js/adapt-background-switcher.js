@@ -101,8 +101,8 @@ define([
         this.$backgrounds[this._activeId].addClass('is-active');
       }
       else {
-        $('.background-switcher__item.is-active').animate({ opacity: 0 }, 0, function(){ $(this).removeClass('is-active'); });
-        this.$backgrounds[this._activeId].animate({ opacity: 1 }, 0, function(){ $(this).addClass('is-active'); });
+        $('.background-switcher__item.is-active').animate({ opacity: 0 }, 500, function(){ $(this).removeClass('is-active'); });
+        this.$backgrounds[this._activeId].animate({ opacity: 1 }, 500, function(){ $(this).addClass('is-active'); });
       }
     },
 
