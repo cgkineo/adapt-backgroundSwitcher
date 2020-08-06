@@ -60,7 +60,7 @@ define([
 
     calculateBackground() {
       const activeItem = Object.values(this._items).reduce((highest, item) => {
-        const isValid = (item.measurements && item.measurements.onscreen && item.measurements.percentFromTop < 60);
+        const isValid = (item.measurements && item.measurements.onscreen && item.measurements.percentFromTop < 80);
         if (isValid) return item;
         return highest;
       }, null);
@@ -110,9 +110,9 @@ define([
    * Turn off smooth scrolling in IE and Edge to stop the background from flickering on scroll
    */
   if (navigator.userAgent.match(/MSIE 10/i) || navigator.userAgent.match(/Trident\/7\./) || navigator.userAgent.match(/Edge/)) {
-    $('body').on("mousewheel", event => {
+    document.body.addEventListener("mousewheel", event => {
       event.preventDefault();
-      const wd = event.deltaY * event.deltaFactor;
+      const wd = event.wheelDelta;
       const csp = window.pageYOffset;
       window.scrollTo(0, csp - wd);
     });
