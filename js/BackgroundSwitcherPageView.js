@@ -36,7 +36,7 @@ export default class BackgroundSwitcherPageView extends Backbone.View {
     if (!shouldDisableSmoothScrolling) return;
     $('body').on('mousewheel', function (event) {
       event.preventDefault();
-      const wd = event.deltaY * event.deltaFactor;
+      const wd = event.originalEvent.wheelDelta;
       const csp = window.pageYOffset;
       window.scrollTo(0, csp - wd);
     });
