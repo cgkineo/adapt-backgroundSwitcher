@@ -26,6 +26,6 @@
         "title": "Block 1",
         "body": "",
         "_backgroundSwitcher": {
-            "src": "course/en/images/example.jpg"
+            "_src": "course/en/images/example.jpg"
         }
     }

@@ -45,14 +45,23 @@
               "required": false,
               "legend": "Background Switcher",
               "properties": {
-                "src": {
+                "_src": {
                   "type": "string",
                   "required": false,
-                  "title": "Background Switcher image",
+                  "title": "Image",
                   "default": "",
                   "inputType": "Asset:image",
                   "validators": [],
                   "help": "The background image you want shown for this block"
+                },
+                "_classes": {
+                  "type": "string",
+                  "required": false,
+                  "title": "Classes",
+                  "default": "",
+                  "inputType": "Text",
+                  "validators": [],
+                  "help": "The classes you want to apply to the background for this block"
                 }
               }
             }

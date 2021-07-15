@@ -1,17 +1,17 @@
 {
-  "name": "adapt-background-switcher",
+  "name": "adapt-backgroundSwitcher",
   "repository": {
     "type": "git",
-    "url": "git://github.com/cgkineo/adapt-background-switcher"
+    "url": "git://github.com/cgkineo/adapt-backgroundSwitcher"
   },
   "version": "3.0.0",
   "framework": ">=5",
-  "homepage": "https://github.com/cgkineo/adapt-background-switcher",
-  "issues": "https://github.com/cgkineo/adapt-background-switcher/issues/",
-  "extension": "background-switcher",
+  "homepage": "https://github.com/cgkineo/adapt-backgroundSwitcher",
+  "issues": "https://github.com/cgkineo/adapt-backgroundSwitcher/issues/",
+  "extension": "backgroundSwitcher",
   "displayName": "Background Switcher",
   "description": "Switches background image as you move through blocks",
-  "main": "/js/adapt-background-switcher.js",
+  "main": "/js/adapt-backgroundSwitcher.js",
   "keywords": [
     "adapt-plugin",
     "adapt-extension"
