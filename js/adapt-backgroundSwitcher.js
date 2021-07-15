@@ -1,5 +1,5 @@
 import Adapt from 'core/js/adapt';
-import BackgroundSwitcherView from './BackgroundSwitcherPageView';
+import BackgroundSwitcherPageView from './BackgroundSwitcherPageView';
 
 class BackgroundSwitcher extends Backbone.Controller {
 
@@ -9,7 +9,7 @@ class BackgroundSwitcher extends Backbone.Controller {
 
   onPageViewPostRender({ model }) {
     if (!model.get('_backgroundSwitcher')?._isEnabled) return;
-    new BackgroundSwitcherView({ model });
+    new BackgroundSwitcherPageView({ model });
   }
 
 }

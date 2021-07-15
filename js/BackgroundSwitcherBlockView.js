@@ -25,12 +25,11 @@ export default class BackgroundSwitcherBlockView extends Backbone.View {
   }
 
   initialize({ blockView }) {
+    this.onBlockInView = this.onBlockInView.bind(this);
     this.listenTo(Adapt, 'remove', this.onRemove);
     this.blockView = blockView;
     // Take the first measurment on postRender
     this.onBlockInView();
-    // Debounce to wait for scroll to finish
-    this.onBlockInView = this.onBlockInView.bind(this);
     this.blockView.$el
       .addClass('has-background-switcher-image')
       .on('onscreen.background-switcher', this.onBlockInView);
