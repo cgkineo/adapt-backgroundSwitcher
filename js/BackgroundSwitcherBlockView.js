@@ -104,9 +104,9 @@ export default class BackgroundSwitcherBlockView extends Backbone.View {
   }
 
   /**
-   * Returns true for the last available onscreen view or the first view
+   * Returns 'forward', 'backword' or null to demonstrate active direction
    * @param {BackgroundSwitcherBlockView} view
-   * @returns {boolean}
+   * @returns {string|null}
    */
   static activeDirection(view) {
     const current = this.getCurrent();
