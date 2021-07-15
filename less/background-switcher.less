@@ -1,85 +1,32 @@
-
-.page.background-switcher-active {
-
-    .page-inner {
-        position: relative;
+.background-switcher-active {
+  .background-switcher {
+    &__container {
+      position: relative;
     }
 
-    .background-switcher-desktop {
+    &__item {
+      position: fixed;
+      top: @navigation-height;
+      left: 0;
+      right: 0;
+      margin: auto;
+      height: 100%;
+      width: 100%;
+      max-width: @max-width;
 
-        .article {
-            position:relative;
-            background-color: transparent;
-        }
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
 
-        .block {
-            background-color: @background-color;
-
-            &.background-switcher-block {
-                background-color: transparent;
-
-                .background-switcher-block-mobile {
-                    background-image: none !important;
-                }
-            }
-        }
-
-        .background-switcher-container {
-
-            .background-switcher-background {
-
-                background-size: cover;
-                background-position: 50% 0;
-                position: fixed;
-                z-index: 0;
-                width: 100%;
-                height: 100%;
-                top: 50px;
-                opacity: 0;
-                max-width: @max-width;
-
-                transition: opacity 1s;
-            }
-
-            .background-switcher-background.active {
-                opacity:1;
-            }
-        }
+      z-index: -1;
+      opacity: 0;
+      .transition(opacity .5s ease-in);
+      // transform: translate3d(0, 0, 1px);
     }
 
-    .background-switcher-mobile {
-
-        .background-switcher-background {
-            display:none;
-        }
-
-        .block.background-switcher-block {
-
-            .background-switcher-block-mobile {
-
-                background-size: cover !important;
-                background-repeat: no-repeat;
-                background-position: center;
-            }
-        }
+    &__item.is-active {
+      opacity: 1;
+      .transition(opacity .5s ease-in);
     }
-
-    .ie8 & {
-        .background-switcher-desktop;
-
-        .background-switcher-container {
-            .background-switcher-background {
-                max-width: 1024px;
-            }
-        }
-    }
-    @media all and (min-width:699px) {
-        .background-switcher-desktop;
-    }
-
-    @media all and (max-width:699px){
-        .background-switcher-mobile;
-    }
-
-
+  }
 }

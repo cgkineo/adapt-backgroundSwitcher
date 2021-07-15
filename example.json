@@ -1,32 +1,31 @@
-//contentObject.json
-{
-    "_id": "co-10",
-    "_parentId": "course",
-    "_type": "page",
-    "_classes": "",
-    "title": "",
-    "body": "",
-    "_graphic": {
-        "alt": "",
-        "src": "course/en/images/origami-menu-two.jpg"
-    },
-    "linkText": "View",
-    "duration": "2 mins",
-    "_backgroundSwitcher": {
-        "_isActive":true
+    // contentObject.json
+    {
+        "_id": "co-10",
+        "_parentId": "course",
+        "_type": "page",
+        "_classes": "",
+        "title": "",
+        "body": "",
+        "_graphic": {
+            "alt": "",
+            "src": "course/en/images/origami-menu-two.jpg"
+        },
+        "linkText": "View",
+        "duration": "2 mins",
+        "_backgroundSwitcher": {
+            "_isEnabled": true
+        }
     }
-}
 
-//blocks.json
-{
-    "_id": "b-90",
-    "_parentId": "a-25",
-    "_type": "block",
-    "_classes": "",
-    "title": "Block 1",
-    "body": "",
-    "_backgroundSwitcher": {
-        "src": "course/en/images/bg_switcher_04.jpg",
-        "mobileSrc": "course/en/images/bg_switcher_mobile_04.jpg"
+    // blocks.json
+    {
+        "_id": "b-90",
+        "_parentId": "a-25",
+        "_type": "block",
+        "_classes": "",
+        "title": "Block 1",
+        "body": "",
+        "_backgroundSwitcher": {
+            "src": "course/en/images/example.jpg"
+        }
     }
-}
