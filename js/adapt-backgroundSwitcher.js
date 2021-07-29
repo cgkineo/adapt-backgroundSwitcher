@@ -1,16 +1,25 @@
 import Adapt from 'core/js/adapt';
+import data from 'core/js/data';
 import BackgroundSwitcherPageView from './BackgroundSwitcherPageView';
 
 class BackgroundSwitcher extends Backbone.Controller {
 
   initialize() {
-    this.listenTo(Adapt, 'pageView:postRender', this.onPageViewPostRender);
+    this.listenTo(Adapt, {
+      'app:dataReady': this.onDataReady,
+      'pageView:postRender': this.onPageViewPostRender
+    });
+  }
+
+  onDataReady() {
+    const hasBackgroundSwitcher = data.some(model => model.get('_backgroundSwitcher')?._isEnabled === true);
+    if (!hasBackgroundSwitcher) return;
+    this.disableSmoothScrolling();
   }
 
   onPageViewPostRender({ model }) {
     if (!model.get('_backgroundSwitcher')?._isEnabled) return;
     new BackgroundSwitcherPageView({ model });
-    this.disableSmoothScrolling();
   }
 
   /**
