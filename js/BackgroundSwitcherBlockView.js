@@ -81,7 +81,7 @@ export default class BackgroundSwitcherBlockView extends Backbone.View {
   }
 
   onRemove () {
-    BackgroundSwitcherBlockView.clearMeasurements();
+    BackgroundSwitcherBlockView.clearRecords();
     $('body').removeClass('backgroundswitcher-active');
     this.blockView.$el.off('onscreen.backgroundswitcher');
     this.remove();
