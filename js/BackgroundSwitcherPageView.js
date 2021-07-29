@@ -8,7 +8,6 @@ export default class BackgroundSwitcherPageView extends Backbone.View {
   }
 
   initialize() {
-    this.disableSmoothScrolling();
     this.addToBody();
     this.listenTo(Adapt, {
       'blockView:postRender': this.onBlockViewPostRender,
@@ -25,21 +24,6 @@ export default class BackgroundSwitcherPageView extends Backbone.View {
     if (!view.model.get('_backgroundSwitcher')) return;
     const backgroundSwitcherBlockView = new BackgroundSwitcherBlockView({ model: view.model, blockView: view });
     this.$el.append(backgroundSwitcherBlockView.$el);
-  }
-
-  /**
-   * Turn off smooth scrolling in IE and Edge to stop the background from flickering on scroll
-   */
-  disableSmoothScrolling() {
-    const userAgent = navigator.userAgent;
-    const shouldDisableSmoothScrolling = (userAgent.match(/MSIE 10/i) || userAgent.match(/Trident\/7\./) || userAgent.match(/Edge/));
-    if (!shouldDisableSmoothScrolling) return;
-    $('body').on('mousewheel', function (event) {
-      event.preventDefault();
-      const wd = event.originalEvent.wheelDelta;
-      const csp = window.pageYOffset;
-      window.scrollTo(0, csp - wd);
-    });
   }
 
   onRemove () {
