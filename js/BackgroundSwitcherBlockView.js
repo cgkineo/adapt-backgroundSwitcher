@@ -127,7 +127,7 @@ export default class BackgroundSwitcherBlockView extends Backbone.View {
 
   static getCurrent() {
     // Make sure to fetch the background for the last available block only
-    const onScreens = this.records.filter(({ measurement: { percentFromTop, percentFromBottom, onscreen } }) => onscreen && percentFromTop < 80 && percentFromBottom < 80 && percentFromBottom < 80 && percentFromLeft < 80);
+    const onScreens = this.records.filter(({ measurement: { percentFromTop, percentFromBottom, percentFromRight, percentFromLeft, onscreen } }) => onscreen && percentFromTop < 80 && percentFromBottom < 80 && percentFromRight < 80 && percentFromLeft < 80);
     // Fetch the last onscreen
     const record = onScreens.pop();
     if (record) return record;
