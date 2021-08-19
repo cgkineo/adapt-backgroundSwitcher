@@ -34,9 +34,9 @@ Classes can have direction, letting you style an animation both ways.
 To be completed
 
 ----------------------------
-**Version number:**  4.1.0
-**Framework versions:**  5.8+
-**Author / maintainer:** CGKineo
-**Accessibility support:** No
-**RTL support:** Yes
+**Version number:**  4.1.0<br />
+**Framework versions:**  5.8+<br />
+**Author / maintainer:** CGKineo<br />
+**Accessibility support:** No<br />
+**RTL support:** Yes<br />
 **Cross-platform coverage:** Chrome, Chrome for Android, Firefox (ESR + latest version), Edge, IE11, Safari 12+13 for macOS/iOS/iPadOS, Opera
