@@ -9,8 +9,16 @@ export default class BackgroundSwitcherBlockView extends Backbone.View {
   attributes() {
     return {
       'data-id': this.model.get('_id'),
-      style: this._src ? `background-image: url(${this._src});` : null
+      style: (!this.isVideo && this._src) ? `background-image: url(${this._src});` : null
     };
+  }
+
+  get isVideo() {
+    return /\.mp4/gi.test(String(this._src));
+  }
+
+  get video() {
+    return this.$('video')[0];
   }
 
   get _src() {
@@ -24,7 +32,19 @@ export default class BackgroundSwitcherBlockView extends Backbone.View {
     return options._classes;
   }
 
+  play() {
+    if (!this.isVideo) return;
+    this.video.play();
+  }
+
+  pause() {
+    if (!this.isVideo) return;
+    this.video.pause();
+    this.video.currentTime = 0;
+  }
+
   initialize({ blockView }) {
+    if (this.isVideo) this.renderVideo();
     this.onBlockInView = this.onBlockInView.bind(this);
     this.listenTo(Adapt, 'remove', this.onRemove);
     this.blockView = blockView;
@@ -35,6 +55,10 @@ export default class BackgroundSwitcherBlockView extends Backbone.View {
       .on('onscreen.background-switcher', this.onBlockInView);
   }
 
+  renderVideo() {
+    this.$el.html(Handlebars.templates.backgroundSwitcherVideo(this.model.toJSON()));
+  }
+
   onBlockInView() {
     BackgroundSwitcherBlockView.addRecord(this);
     const direction = BackgroundSwitcherBlockView.activeDirection(this);
@@ -42,25 +66,41 @@ export default class BackgroundSwitcherBlockView extends Backbone.View {
     this.showBackground(direction);
   }
 
-  showBackground(direction) {
-    this.updateAttributes();
-    const $currentActive = $('.backgroundswitcher__item.is-active');
-    const $currentDeactive = $('.backgroundswitcher__item.is-deactive');
-    $currentDeactive
+  activate() {
+    this.$el.addClass('is-active');
+    this.addClasses();
+    this.play();
+  }
+
+  deactivate() {
+    this.$el
+      .addClass('is-deactive')
+      .removeClass('is-active');
+  }
+
+  forceDeactivate() {
+    this.$el
       .removeClass('is-deactive')
       .addClass('is-deactive-force'); // Make sure IE11 ignores opacity animation
-    $currentActive.addClass('is-deactive');
-    $currentActive.removeClass('is-active');
+  }
+
+  removeForceDeactivate() {
+    this.pause();
+    // Make sure IE11 ignores opacity animation
+    this.$el.removeClass('is-deactive-force');
+  }
+
+  showBackground(direction) {
+    this.updateAttributes();
+    const currentActiveView = BackgroundSwitcherBlockView.findRecord(record => record.view.$el.hasClass('is-active'))?.view;
+    const currentDeactiveView = BackgroundSwitcherBlockView.findRecord(record => record.view.$el.hasClass('is-deactive'))?.view;
+    currentDeactiveView?.forceDeactivate();
+    currentActiveView?.deactivate();
     this.removeClasses();
     requestAnimationFrame(() => {
-      // Make sure IE11 ignores opacity animation
-      $('.backgroundswitcher__item.is-deactive-force').removeClass('is-deactive-force');
-      // Set animation direction
-      $('.backgroundswitcher__container')
-        .toggleClass('forward', direction === 'forward')
-        .toggleClass('backward', direction === 'backward');
-      this.$el.addClass('is-active');
-      this.addClasses();
+      BackgroundSwitcherBlockView.setDirection(direction);
+      currentDeactiveView?.removeForceDeactivate();
+      this.activate();
     });
   }
 
@@ -101,6 +141,17 @@ export default class BackgroundSwitcherBlockView extends Backbone.View {
       view,
       measurement: $(view.blockView.$el).onscreen()
     });
+  }
+
+  static findRecord(predicate) {
+    return this.records.find(predicate);
+  }
+
+  static setDirection(direction) {
+    // Set animation direction
+    $('.backgroundswitcher__container')
+      .toggleClass('forward', direction === 'forward')
+      .toggleClass('backward', direction === 'backward');
   }
 
   /**

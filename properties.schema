@@ -50,9 +50,9 @@
                   "required": false,
                   "title": "Image",
                   "default": "",
-                  "inputType": "Asset:image",
+                  "inputType": "Asset",
                   "validators": [],
-                  "help": "The background image you want shown for this block"
+                  "help": "The background image or video you want shown for this block"
                 },
                 "_classes": {
                   "type": "string",
