@@ -10,7 +10,7 @@ class BackgroundSwitcher extends Backbone.Controller {
       'app:dataReady': this.onDataReady,
       'pageView:postRender': this.onPageViewPostRender
     });
-    this._isMuted = false;
+    this._isMuted = true;
   }
 
   onDataReady() {
