@@ -56,7 +56,11 @@ export default class BackgroundSwitcherBlockView extends Backbone.View {
   }
 
   renderVideo() {
-    this.$el.html(Handlebars.templates.backgroundSwitcherVideo(this.model.toJSON()));
+    // this.$el.html(Handlebars.templates.backgroundSwitcherVideo(this.model.toJSON()));
+    const videoTag = Adapt.backgroundSwitcher.getVideoTag();
+    videoTag.src = this._src;
+    videoTag.muted = Adapt.backgroundSwitcher.isMuted;
+    this.el.appendChild(videoTag);
   }
 
   onBlockInView() {
@@ -121,6 +125,7 @@ export default class BackgroundSwitcherBlockView extends Backbone.View {
   }
 
   onRemove () {
+    Adapt.backgroundSwitcher.releaseVideoTag(this.$('video')[0]);
     BackgroundSwitcherBlockView.clearRecords();
     $('body').removeClass('backgroundswitcher-active');
     this.blockView.$el.off('onscreen.backgroundswitcher');
@@ -167,6 +172,7 @@ export default class BackgroundSwitcherBlockView extends Backbone.View {
     current.isActive = true;
     if (!previous) return 'forward';
     previous.isActive = false;
+    previous.view.pause();
     return (previous.measurement.top < current.measurement.top) || (previous.measurement.top === current.measurement.top && previous.measurement.left < current.measurement.left)
       ? 'forward'
       : 'backward';
