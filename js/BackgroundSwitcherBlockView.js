@@ -60,6 +60,9 @@ export default class BackgroundSwitcherBlockView extends Backbone.View {
     const videoTag = Adapt.backgroundSwitcher.getVideoTag();
     videoTag.src = this._src;
     videoTag.muted = Adapt.backgroundSwitcher.isMuted;
+    videoTag.loop = true;
+    videoTag.playsinline = true;
+    videoTag.preload = 'none';
     this.el.appendChild(videoTag);
   }
 
