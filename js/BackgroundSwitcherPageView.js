@@ -11,6 +11,7 @@ export default class BackgroundSwitcherPageView extends Backbone.View {
     this.addToBody();
     this.listenTo(Adapt, {
       'blockView:postRender': this.onBlockViewPostRender,
+      'backgroundSwitcher:lowBandwidth': this.onLowBandwidthChange,
       remove: this.onRemove
     });
   }
@@ -24,6 +25,10 @@ export default class BackgroundSwitcherPageView extends Backbone.View {
     if (!view.model.get('_backgroundSwitcher')) return;
     const backgroundSwitcherBlockView = new BackgroundSwitcherBlockView({ model: view.model, blockView: view });
     this.$el.append(backgroundSwitcherBlockView.$el);
+  }
+
+  onLowBandwidthChange(value) {
+    this.$el.toggleClass('backgroundswitcher-lowbandwidth', value);
   }
 
   onRemove () {

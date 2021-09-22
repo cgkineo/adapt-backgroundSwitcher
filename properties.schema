@@ -54,6 +54,15 @@
                   "validators": [],
                   "help": "The background image or video you want shown for this block"
                 },
+                "_poster": {
+                  "type": "string",
+                  "required": false,
+                  "title": "Poster image",
+                  "default": "",
+                  "inputType": "Asset:Image",
+                  "validators": [],
+                  "help": "If the background is a video, this is its fallback/poster image"
+                },
                 "_classes": {
                   "type": "string",
                   "required": false,

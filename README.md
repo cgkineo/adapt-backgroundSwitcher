@@ -16,9 +16,11 @@ Blocks
 
 **\_backgroundSwitcher** (object): The Background Switcher attributes group contains the value for **src**.
 
->**_src** (string): Sets the background image or video that should appear when this block comes into view.
+>**\_src** (string): Sets the background image or video that should appear when this block comes into view.
 
->**_classes** (string): Sets the classes applied to the background when it comes into view.
+>**\_poster** (string): If the background is a video this is its fallback/poster image.
+
+>**\_classes** (string): Sets the classes applied to the background when it comes into view.
 
 
 ### Classes
@@ -34,7 +36,7 @@ Classes can have direction, letting you style an animation both ways.
 To be completed
 
 ----------------------------
-**Version number:**  4.1.0<br />
+**Version number:**  4.2.0<br />
 **Framework versions:**  5.8+<br />
 **Author / maintainer:** CGKineo<br />
 **Accessibility support:** No<br />

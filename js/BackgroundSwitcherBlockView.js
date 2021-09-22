@@ -8,8 +8,7 @@ export default class BackgroundSwitcherBlockView extends Backbone.View {
 
   attributes() {
     return {
-      'data-id': this.model.get('_id'),
-      style: (!this.isVideo && this._src) ? `background-image: url(${this._src});` : null
+      'data-id': this.model.get('_id')
     };
   }
 
@@ -27,6 +26,16 @@ export default class BackgroundSwitcherBlockView extends Backbone.View {
     return options._src;
   }
 
+  get _poster() {
+    // Note: Can add mobile image switching here if needed
+    const options = this.model.get('_backgroundSwitcher');
+    return options._poster;
+  }
+
+  togglePoster(showPoster) {
+    this.$el.toggleClass('backgroundswitcher-hide-poster', !showPoster);
+  }
+
   get _classes() {
     const options = this.model.get('_backgroundSwitcher');
     return options._classes;
@@ -34,6 +43,7 @@ export default class BackgroundSwitcherBlockView extends Backbone.View {
 
   play() {
     if (!this.isVideo) return;
+    if (Adapt.backgroundSwitcher.lowBandwidth) return;
     this.video.play();
   }
 
@@ -44,8 +54,10 @@ export default class BackgroundSwitcherBlockView extends Backbone.View {
   }
 
   initialize({ blockView }) {
-    if (this.isVideo) this.renderVideo();
+    this.onTimeUpdate = this.onTimeUpdate.bind(this);
     this.onBlockInView = this.onBlockInView.bind(this);
+    if (this.isVideo) this.renderVideo();
+    if (!this.isVideo) this.renderImage();
     this.listenTo(Adapt, 'remove', this.onRemove);
     this.blockView = blockView;
     // Take the first measurment on postRender
@@ -58,12 +70,33 @@ export default class BackgroundSwitcherBlockView extends Backbone.View {
   renderVideo() {
     // this.$el.html(Handlebars.templates.backgroundSwitcherVideo(this.model.toJSON()));
     const videoTag = Adapt.backgroundSwitcher.getVideoTag();
+    videoTag.attributes['aria-hidden'] = true;
     videoTag.src = this._src;
     videoTag.muted = Adapt.backgroundSwitcher.isMuted;
     videoTag.loop = true;
     videoTag.playsinline = true;
     videoTag.preload = 'none';
     this.el.appendChild(videoTag);
+    videoTag.addEventListener('timeupdate', this.onTimeUpdate);
+    if (!this._poster) return;
+    const posterTag = document.createElement('img');
+    posterTag.className = 'poster';
+    posterTag.attributes['aria-hidden'] = true;
+    posterTag.src = this._poster;
+    this.el.appendChild(posterTag);
+  }
+
+  renderImage() {
+    const imgTag = document.createElement('img');
+    imgTag.className = 'poster';
+    imgTag.attributes['aria-hidden'] = true;
+    imgTag.src = this._src;
+    this.el.appendChild(imgTag);
+  }
+
+  onTimeUpdate(event) {
+    event.currentTarget.removeEventListener('timeupdate', this.onTimeUpdate);
+    this.togglePoster(false);
   }
 
   onBlockInView() {
@@ -128,7 +161,11 @@ export default class BackgroundSwitcherBlockView extends Backbone.View {
   }
 
   onRemove () {
-    Adapt.backgroundSwitcher.releaseVideoTag(this.$('video')[0]);
+    const videoTag = this.$('video')[0];
+    if (videoTag) {
+      videoTag.removeEventListener('timeupdate', this.onTimeUpdate);
+      Adapt.backgroundSwitcher.releaseVideoTag(videoTag);
+    }
     BackgroundSwitcherBlockView.clearRecords();
     $('body').removeClass('backgroundswitcher-active');
     this.blockView.$el.off('onscreen.backgroundswitcher');

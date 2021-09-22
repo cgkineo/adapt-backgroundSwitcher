@@ -4,7 +4,7 @@
     "type": "git",
     "url": "git://github.com/cgkineo/adapt-backgroundSwitcher"
   },
-  "version": "4.1.0",
+  "version": "4.2.0",
   "framework": ">=5.8",
   "homepage": "https://github.com/cgkineo/adapt-backgroundSwitcher",
   "issues": "https://github.com/cgkineo/adapt-backgroundSwitcher/issues/",

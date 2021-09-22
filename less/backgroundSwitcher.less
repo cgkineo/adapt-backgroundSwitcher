@@ -45,11 +45,52 @@
       z-index: 1;
     }
 
-    &__item video {
+    &__item video,
+    &__item .poster {
       object-fit: cover;
       height: 100%;
       width: 100%;
     }
 
+    &__item .poster {
+      position: absolute;
+      top: 0;
+      z-index: 1;
+      transition: opacity 0.5s;
+      opacity: 1;
+    }
+
+    &-hide-poster {
+      .poster {
+        opacity: 0;
+      }
+    }
+
+    &-lowbandwidth {
+      video {
+        display: none;
+      }
+      .poster {
+        opacity: 1;
+      }
+    }
+
+    &-image-preload {
+      position: fixed;
+      bottom: 200%;
+    }
+
   }
+
+  &.a11y-no-background-images .backgroundswitcher__container {
+    display: none;
+  }
+}
+
+.to-white {
+  background-color: @white;
+}
+
+.to-grey {
+  background-color: @ing-black8;
 }
