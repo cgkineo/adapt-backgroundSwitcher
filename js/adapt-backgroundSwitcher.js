@@ -46,7 +46,7 @@ class BackgroundSwitcher extends Backbone.Controller {
   }
 
   applyMute() {
-    this._videoTags.forEach(tag => (tag.muted = Adapt?.visua11y?.noBackgroundImages || this._isMuted));
+    this._videoTags?.forEach(tag => (tag.muted = Adapt?.visua11y?.noBackgroundImages || this._isMuted));
   }
 
   get lowBandwidth() {
