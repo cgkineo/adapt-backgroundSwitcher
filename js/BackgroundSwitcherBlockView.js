@@ -75,7 +75,8 @@ export default class BackgroundSwitcherBlockView extends Backbone.View {
     videoTag.muted = Adapt.backgroundSwitcher.isMuted;
     videoTag.loop = true;
     videoTag.playsinline = true;
-    videoTag.preload = 'none';
+    videoTag.preload = 'metadata';
+    videoTag.load();
     this.el.appendChild(videoTag);
     videoTag.addEventListener('timeupdate', this.onTimeUpdate);
     if (!this._poster) return;
@@ -95,7 +96,10 @@ export default class BackgroundSwitcherBlockView extends Backbone.View {
   }
 
   onTimeUpdate(event) {
-    event.currentTarget.removeEventListener('timeupdate', this.onTimeUpdate);
+    /** @type {HTMLMediaElement} */
+    const videoTag = event.currentTarget;
+    if (videoTag.paused) return;
+    videoTag.removeEventListener('timeupdate', this.onTimeUpdate);
     this.togglePoster(false);
   }
 
