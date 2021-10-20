@@ -14,7 +14,7 @@ class BackgroundSwitcher extends Backbone.Controller {
     });
     this._videoTags = null;
     this._availableVideoTags = null;
-    this._isMuted = false;
+    this._isMuted = true;
     this._lowBandwidth = false;
   }
 
@@ -24,6 +24,7 @@ class BackgroundSwitcher extends Backbone.Controller {
     this.disableSmoothScrolling();
     this.createVideoTags();
     this.preloadImages();
+    this.applyMute();
   }
 
   onPageViewPostRender({ model }) {
