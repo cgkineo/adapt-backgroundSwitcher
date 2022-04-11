@@ -87,12 +87,17 @@ class BackgroundSwitcher extends Backbone.Controller {
   }
 
   preloadImages() {
-    const $body = $('body');
+    const $cache = $('<div>');
+    $cache[0].style = 'position:absolute;z-index:-1000;opacity:0;';
+    document.body.appendChild($cache[0]);
+    let loaded = 0;
     const onloaded = event => {
       const image = event.currentTarget;
       image.removeEventListener('load', onloaded);
       image.removeEventListener('error', onloaded);
       $(image).remove();
+      loaded++;
+      if (loaded === this.images.length) $cache.remove();
     };
     this.images.forEach(src => {
       const image = new Image();
@@ -100,7 +105,7 @@ class BackgroundSwitcher extends Backbone.Controller {
       image.src = src;
       image.addEventListener('load', onloaded);
       image.addEventListener('error', onloaded);
-      $body.append(image);
+      $cache.append(image);
     });
   }
 
