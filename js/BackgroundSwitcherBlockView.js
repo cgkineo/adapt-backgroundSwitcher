@@ -65,7 +65,7 @@ export default class BackgroundSwitcherBlockView extends Backbone.View {
     this.onBlockInView();
     this.blockView.$el
       .addClass('has-background-switcher-image')
-      .on('onscreen.background-switcher', this.onBlockInView);
+      .on('onscreen.backgroundswitcher', this.onBlockInView);
   }
 
   renderVideo() {
