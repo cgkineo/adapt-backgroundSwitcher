@@ -1,3 +1,10 @@
+    // course.json
+    {
+        "_preload": "none",
+        "_inviewThreshold": 80
+    }
+
+
     // contentObject.json
     {
         "_id": "co-10",

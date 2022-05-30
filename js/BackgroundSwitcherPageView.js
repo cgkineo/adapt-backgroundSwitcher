@@ -16,7 +16,7 @@ export default class BackgroundSwitcherPageView extends Backbone.View {
     });
   }
 
-  addToBody () {
+  addToBody() {
     $('html').addClass('backgroundswitcher-active');
     $('body').prepend(this.$el);
   }
@@ -31,7 +31,7 @@ export default class BackgroundSwitcherPageView extends Backbone.View {
     this.$el.toggleClass('backgroundswitcher-lowbandwidth', value);
   }
 
-  onRemove () {
+  onRemove() {
     $('html').removeClass('backgroundswitcher-active');
     this.remove();
   }

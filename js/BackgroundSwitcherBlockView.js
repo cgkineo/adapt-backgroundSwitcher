@@ -44,6 +44,7 @@ export default class BackgroundSwitcherBlockView extends Backbone.View {
   play() {
     if (!this.isVideo) return;
     if (Adapt.backgroundSwitcher.lowBandwidth) return;
+    if (Adapt?.visua11y?.noAnimations) return;
     this.video.play();
   }
 
@@ -60,7 +61,7 @@ export default class BackgroundSwitcherBlockView extends Backbone.View {
     if (!this.isVideo) this.renderImage();
     this.listenTo(Adapt, 'remove', this.onRemove);
     this.blockView = blockView;
-    // Take the first measurment on postRender
+    // Take the first measurement on postRender
     this.onBlockInView();
     this.blockView.$el
       .addClass('has-background-switcher-image')
@@ -70,12 +71,12 @@ export default class BackgroundSwitcherBlockView extends Backbone.View {
   renderVideo() {
     // this.$el.html(Handlebars.templates.backgroundSwitcherVideo(this.model.toJSON()));
     const videoTag = Adapt.backgroundSwitcher.getVideoTag();
+    videoTag.loop = true;
+    videoTag.playsinline = true;
+    videoTag.preload = Adapt.backgroundSwitcher.config?._preload || 'none';
     videoTag.attributes['aria-hidden'] = true;
     videoTag.src = this._src;
     videoTag.muted = Adapt.backgroundSwitcher.isMuted;
-    videoTag.loop = true;
-    videoTag.playsinline = true;
-    videoTag.preload = 'metadata';
     videoTag.load();
     this.el.appendChild(videoTag);
     videoTag.addEventListener('timeupdate', this.onTimeUpdate);
@@ -164,7 +165,7 @@ export default class BackgroundSwitcherBlockView extends Backbone.View {
     this.$el.removeClass(this._classes);
   }
 
-  onRemove () {
+  onRemove() {
     const videoTag = this.$('video')[0];
     if (videoTag) {
       videoTag.removeEventListener('timeupdate', this.onTimeUpdate);
@@ -172,7 +173,7 @@ export default class BackgroundSwitcherBlockView extends Backbone.View {
     }
     BackgroundSwitcherBlockView.clearRecords();
     $('body').removeClass('backgroundswitcher-active');
-    this.blockView.$el.off('onscreen.background-switcher');
+    this.blockView.$el.off('onscreen.backgroundswitcher');
     this.remove();
   }
 
@@ -228,7 +229,9 @@ export default class BackgroundSwitcherBlockView extends Backbone.View {
 
   static getCurrent() {
     // Make sure to fetch the background for the last available block only
-    const onScreens = this.records.filter(({ measurement: { percentFromTop, percentFromBottom, percentFromRight, percentFromLeft, onscreen } }) => onscreen && percentFromTop < 80 && percentFromBottom < 80 && percentFromRight < 80 && percentFromLeft < 80);
+    if (!this.records) return;
+    const threshold = Adapt.backgroundSwitcher.config?._inviewThreshold ?? 80;
+    const onScreens = this.records.filter(({ measurement: { percentFromTop, percentFromBottom, percentFromRight, percentFromLeft, onscreen } }) => onscreen && percentFromTop < threshold && percentFromBottom < threshold && percentFromRight < threshold && percentFromLeft < threshold);
     // Fetch the last onscreen
     const record = onScreens.pop();
     if (record) return record;

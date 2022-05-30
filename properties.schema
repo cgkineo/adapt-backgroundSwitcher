@@ -12,7 +12,32 @@
           "type": "object"
         },
         "course": {
-          "type": "object"
+          "type": "object",
+          "_backgroundSwitcher": {
+              "type": "object",
+              "required": false,
+              "legend": "Background Switcher",
+              "properties": {
+                "_preload": {
+                  "type": "string",
+                  "required": false,
+                  "default": "none",
+                  "title": "Video preload setting",
+                  "inputType": "Text",
+                  "validators": [],
+                  "help": "How the background video tags should preload, either metadata or none, default is none"
+                },
+                "_inviewThreshold": {
+                  "type": "number",
+                  "required": false,
+                  "default": 80,
+                  "title": "Inview threshold",
+                  "inputType": "Text",
+                  "validators": [],
+                  "help": "The percentage amount required onscreen before playing."
+                }
+              }
+            }
         },
         "contentobject": {
           "type": "object",
