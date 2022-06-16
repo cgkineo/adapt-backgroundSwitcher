@@ -24,6 +24,17 @@
       .transition(opacity .5s ease-in);
       transform: translate(-50%, 0);
       // transform: translate3d(0, 0, 1px);
+      
+      .dir-rtl& {
+        left: 0;
+        right: 50%;
+        transform: translate(50%, 0);
+
+        // flip to clear content (for consistency with components displaying in reverse order for rtl languages)
+/*         img, video {
+          transform: rotateY(180deg);
+        } */
+      }
     }
 
     &__item.is-deactive {
