@@ -222,7 +222,7 @@ export default class BackgroundSwitcherBlockView extends Backbone.View {
     current.isActive = true;
     if (!previous) return 'forward';
     previous.isActive = false;
-    previous.view.pause();
+    // previous.view.pause();
     return (previous.measurement.top < current.measurement.top) || (previous.measurement.top === current.measurement.top && previous.measurement.left < current.measurement.left)
       ? 'forward'
       : 'backward';
