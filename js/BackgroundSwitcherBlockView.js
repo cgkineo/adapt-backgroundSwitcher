@@ -51,6 +51,10 @@ export default class BackgroundSwitcherBlockView extends Backbone.View {
   pause() {
     if (!this.isVideo) return;
     this.video.pause();
+  }
+  
+  rewind() {
+    if (!this.isVideo) return;
     this.video.currentTime = 0;
   }
 
@@ -131,6 +135,7 @@ export default class BackgroundSwitcherBlockView extends Backbone.View {
 
   removeForceDeactivate() {
     this.pause();
+    this.rewind();
     // Make sure IE11 ignores opacity animation
     this.$el.removeClass('is-deactive-force');
   }
