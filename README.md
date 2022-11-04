@@ -16,6 +16,8 @@ Blocks
 
 **\_backgroundSwitcher** (object): The Background Switcher attributes group contains the value for **src**.
 
+>**\_isEnabled** (boolean): Turns on and off the Background Switcher extension.
+
 >**\_src** (string): Sets the background image or video that should appear when this block comes into view.
 
 >**\_poster** (string): If the background is a video this is its fallback/poster image.
