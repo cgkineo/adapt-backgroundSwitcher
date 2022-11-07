@@ -22,7 +22,7 @@ export default class BackgroundSwitcherPageView extends Backbone.View {
   }
 
   onBlockViewPostRender(view) {
-    if (!view.model.get('_backgroundSwitcher')) return;
+    if (!view.model.get('_backgroundSwitcher')?._isEnabled) return;
     const backgroundSwitcherBlockView = new BackgroundSwitcherBlockView({ model: view.model, blockView: view });
     this.$el.append(backgroundSwitcherBlockView.$el);
   }

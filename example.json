@@ -33,6 +33,7 @@
         "title": "Block 1",
         "body": "",
         "_backgroundSwitcher": {
+            "_isEnabled": true,
             "_src": "course/en/images/example.jpg",
             "_comment": "use _poster to provide a mobile fallback when _src is video.",
             "_poster": "",

@@ -13,7 +13,8 @@
         },
         "course": {
           "type": "object",
-          "_backgroundSwitcher": {
+           "properties": {
+            "_backgroundSwitcher": {
               "type": "object",
               "required": false,
               "legend": "Background Switcher",
@@ -38,6 +39,7 @@
                 }
               }
             }
+          }
         },
         "contentobject": {
           "type": "object",
@@ -70,6 +72,14 @@
               "required": false,
               "legend": "Background Switcher",
               "properties": {
+                "_isEnabled": {
+                  "type": "boolean",
+                  "required": false,
+                  "default": false,
+                  "title": "Enable Background Switcher",
+                  "inputType": "Checkbox",
+                  "validators": []
+                },                
                 "_src": {
                   "type": "string",
                   "required": false,
@@ -84,7 +94,7 @@
                   "required": false,
                   "title": "Poster image",
                   "default": "",
-                  "inputType": "Asset:Image",
+                  "inputType": "Asset:image",
                   "validators": [],
                   "help": "If the background is a video, this is its fallback/poster image"
                 },
