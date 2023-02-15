@@ -41,4 +41,4 @@ To be completed
 **Author / maintainer:** CGKineo<br />
 **Accessibility support:** No<br />
 **RTL support:** Yes<br />
-**Cross-platform coverage:** Chrome, Chrome for Android, Firefox (ESR + latest version), Edge, IE11, Safari 12+13 for macOS/iOS/iPadOS, Opera
+**Cross-platform coverage:** Chrome, Chrome for Android, Firefox (ESR + latest version), Edge, IE11, Safari 12+13 for macOS/iOS/iPadOS, Opera 
