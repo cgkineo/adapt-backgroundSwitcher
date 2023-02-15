@@ -38,8 +38,6 @@ Classes can have direction, letting you style an animation both ways.
 To be completed
 
 ----------------------------
-**Version number:**  4.3.1<br />
-**Framework versions:**  5.8+<br />
 **Author / maintainer:** CGKineo<br />
 **Accessibility support:** No<br />
 **RTL support:** Yes<br />
