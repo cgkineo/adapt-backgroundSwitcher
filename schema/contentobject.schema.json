@@ -1,0 +1,26 @@
+{
+  "$anchor": "_backgroundSwitcher-contentobject",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "$patch": {
+    "source": {
+      "$ref": "contentobject"
+    },
+    "with": {
+      "properties": {
+        "_backgroundSwitcher": {
+          "type": "object",
+          "title": "Background Switcher",
+          "default": {},
+          "properties": {
+            "_isEnabled": {
+              "type": "boolean",
+              "title": "Enable Background Switcher",
+              "default": false
+            }
+          }
+        }
+      }
+    }
+  }
+}
