@@ -1,0 +1,34 @@
+{
+  "$anchor": "_backgroundSwitcher-course",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "$patch": {
+    "source": {
+      "$ref": "course"
+    },
+    "with": {
+      "properties": {
+        "_backgroundSwitcher": {
+          "type": "object",
+          "title": "Background Switcher",
+          "default": {},
+          "properties": {
+            "_preload": {
+              "type": "string",
+              "title": "Video preload setting",
+              "description": "How the background video tags should preload, either metadata or none, default is none",
+              "default": "none"
+            },
+            "_inviewThreshold": {
+              "type": "number",
+              "title": "Inview threshold",
+              "description": "The percentage amount required onscreen before playing.",
+              "default": 80,
+              "_backboneForms": "Text"
+            }
+          }
+        }
+      }
+    }
+  }
+}

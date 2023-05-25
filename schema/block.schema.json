@@ -1,0 +1,49 @@
+{
+  "$anchor": "_backgroundSwitcher-block",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "$patch": {
+    "source": {
+      "$ref": "block"
+    },
+    "with": {
+      "properties": {
+        "_backgroundSwitcher": {
+          "type": "object",
+          "title": "Background Switcher",
+          "default": {},
+          "properties": {
+            "_isEnabled": {
+              "type": "boolean",
+              "title": "Enable Background Switcher",
+              "default": false
+            },
+            "_src": {
+              "type": "string",
+              "isObjectId": true,
+              "title": "Image",
+              "description": "The background image or video you want shown for this block",
+              "_backboneForms": "Asset"
+            },
+            "_poster": {
+              "type": "string",
+              "isObjectId": true,
+              "title": "Poster image",
+              "description": "If the background is a video, this is its fallback/poster image",
+              "_backboneForms": {
+                "type": "Asset",
+                "media": "image"
+              }
+            },
+            "_classes": {
+              "type": "string",
+              "title": "Classes",
+              "description": "The classes you want to apply to the background for this block",
+              "default": ""
+            }
+          }
+        }
+      }
+    }
+  }
+}
