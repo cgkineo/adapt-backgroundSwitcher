@@ -23,8 +23,7 @@
               "type": "number",
               "title": "Inview threshold",
               "description": "The percentage amount required onscreen before playing.",
-              "default": 80,
-              "_backboneForms": "Text"
+              "default": 80
             }
           }
         }
