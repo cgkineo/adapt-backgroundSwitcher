@@ -240,15 +240,17 @@ export default class BackgroundSwitcherBlockView extends Backbone.View {
     // Fetch the last onscreen
     const record = onScreens.pop();
     if (record) return record;
-    // Find the lowest possible percent from bottom, the last background
-    const lowestPostivePercentFromBottom = this.records.reduce((lowestPostivePercentFromBottom, record) => {
-      if (record.measurement.percentFromBottom < 0) return lowestPostivePercentFromBottom;
-      if (!lowestPostivePercentFromBottom) return record;
-      return (lowestPostivePercentFromBottom.measurement.percentFromBottom < record.measurement.percentFromBottom)
-        ? lowestPostivePercentFromBottom
+    // Find the lowest possible percent from bottom right, the last background
+    const lowestPostivePercentFromBottomRight = this.records.reduce((lowestPostivePercentFromBottomRight, record) => {
+      if (record.measurement.percentFromBottom < 0) return lowestPostivePercentFromBottomRight;
+      if (record.measurement.percentFromRight < 0) return lowestPostivePercentFromBottomRight;
+      if (!lowestPostivePercentFromBottomRight) return record;
+      return (lowestPostivePercentFromBottomRight.measurement.percentFromBottom < record.measurement.percentFromBottom) &&
+      (lowestPostivePercentFromBottomRight.measurement.percentFromRight <= record.measurement.percentFromRight)
+        ? lowestPostivePercentFromBottomRight
         : record;
     }, null);
-    return lowestPostivePercentFromBottom;
+    return lowestPostivePercentFromBottomRight;
   }
 
   /**
